@@ -31,7 +31,7 @@ def init():
     """ 
     Initializes Window
     """
-
+    global running
     global screen
     global clock
     screen = pygame.display.set_mode((1280, 720))

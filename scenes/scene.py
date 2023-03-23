@@ -1,8 +1,9 @@
-from actors.actor import Actor
+
 
 
 class Scene:
     def __init__(self) -> None:
+        from actors.actor import Actor
         self._actors: list[Actor] = []
 
     def init(self):
