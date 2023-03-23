@@ -1,3 +1,5 @@
+import pygame
+from actors.button import Button
 from scenes.scene import Scene
 
 
@@ -6,13 +8,8 @@ class MainMenu(Scene):
         super().__init__()
 
     def init(self):
+        self.actors.append(Button("Szia uram", [100, 100], 5, 2, lambda event: None))
         super().init()
-
-    def render(self):
-        super().render()
-
-    def loop(self):
-        super().loop()
 
     def dispose(self):
         return super().dispose()

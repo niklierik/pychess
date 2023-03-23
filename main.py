@@ -18,6 +18,7 @@ screen: pygame.Surface = None
 # Clock used by pygame
 clock: pygame.time.Clock = None
 
+
 def set_scene(scene: Scene):
     global _scene
     if _scene is not None:
@@ -28,20 +29,21 @@ def set_scene(scene: Scene):
 
 
 def init():
-    """ 
+    """
     Initializes Window
     """
     global running
     global screen
     global clock
+    pygame.init()
     screen = pygame.display.set_mode((1280, 720))
     clock = pygame.time.Clock()
-    pygame.init()
     running = True
+    set_scene(MainMenu())
 
 
 def events():
-    """ 
+    """
     Runs PyGame events
     """
     for event in pygame.event.get():
@@ -53,14 +55,15 @@ def events():
         if event.type == pygame.MOUSEBUTTONUP:
             pos = pygame.mouse.get_pos()
             button = event.button
-            _scene.on_mouse_button_up(event,pos, button)
+            _scene.on_mouse_button_up(event, pos, button)
         if event.type == pygame.MOUSEBUTTONDOWN:
             pos = pygame.mouse.get_pos()
             button = event.button
-            _scene.on_mouse_button_down(event,pos,button)
+            _scene.on_mouse_button_down(event, pos, button)
+
 
 def loop():
-    """ 
+    """
     Run game logic
     """
     global _scene
@@ -69,22 +72,22 @@ def loop():
 
 
 def render():
-    """ 
+    """
     Renders game
     """
     global screen
     global _scene
     screen.fill("black")
     if _scene is not None:
-        _scene.render()
+        _scene.render(screen)
     pygame.display.flip()
 
 
 def try_installing_stockfish():
-    """ 
+    """
     Installs Stockfish
     """
-    if (path.isfile("./stockfish")):
+    if path.isfile("./stockfish"):
         return
     logging.info("Stockfish was not found, installing it...")
     sys = platform.system()
@@ -110,14 +113,14 @@ def try_installing_stockfish():
 
 
 def clean():
-    """ 
+    """
     Disposing game
     """
     pygame.quit()
 
 
 def main():
-    """ 
+    """
     Entry point of game
     """
     init()
