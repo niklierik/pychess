@@ -1,6 +1,7 @@
 from actors.actor import Actor
 import pygame
 from typing import Callable
+import assets
 
 
 class ButtonClickEvent:
@@ -26,7 +27,6 @@ class Button(Actor):
         self.tint = "white"
         self.hover_tint = "darkgrey"
         self.active_tint = self.tint
-
         self.border = border
         self.padding = padding
 
