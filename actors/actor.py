@@ -3,9 +3,15 @@ from scenes.scene import Scene
 
 
 class Actor:
+    import main
+
     def __init__(self, scene: Scene) -> None:
         self._scene = scene
         self._visible = False
+
+    @property
+    def game(self):
+        return self.scene.game
 
     @property
     def scene(self) -> Scene:

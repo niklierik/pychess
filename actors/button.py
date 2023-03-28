@@ -2,6 +2,7 @@ from actors.actor import Actor
 import pygame
 from typing import Callable
 import assets
+from scenes.scene import Scene
 
 
 class ButtonClickEvent:
@@ -13,30 +14,37 @@ class ButtonClickEvent:
 class Button(Actor):
     def __init__(
         self,
+        scene: Scene,
         text: str,
         pos: tuple[int, int],
+        size: tuple[int, int],
         border: int,
         padding: int,
+        texture: pygame.Surface,
+        hover_texture: pygame.Surface,
         action: Callable[[ButtonClickEvent], None],
     ) -> None:
+        super().__init__(scene)
         self.action = action
         self.pos = pos
         self.text = text
         self.inside = False
-
-        self.tint = "white"
-        self.hover_tint = "darkgrey"
-        self.active_tint = self.tint
         self.border = border
         self.padding = padding
+        self.size = size
+        self.texture = texture.copy()
+        self.hover_texture = hover_texture.copy()
 
     def init(self):
-        self.texture = pygame.image.load("assets/textures/buttons/start.png")
-        self.hover_texture = self.texture.copy()
-        self.hover_texture.fill("darkgrey", special_flags=pygame.BLEND_MULT)
-        self.active_texture = self.texture
-        rect = self.active_texture.get_rect()
+        rect = self.texture.get_rect()
+        rect.width = self.size[0]
+        rect.height = self.size[1]
         rect.center = (self.pos[0] + rect.width // 2, self.pos[1] + rect.height // 2)
+        self.texture = pygame.transform.scale(self.texture, (rect.width, rect.height))
+        self.hover_texture = pygame.transform.scale(
+            self.hover_texture, (rect.width, rect.height)
+        )
+        self.active_texture = self.texture
         self.bounds = pygame.Rect(self.pos[0], self.pos[1], rect.width, rect.height)
         super().init()
 

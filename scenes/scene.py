@@ -2,14 +2,21 @@ import pygame
 
 
 class Scene:
-    def __init__(self) -> None:
+    from main import Game
+
+    def __init__(self, game: Game) -> None:
         from actors.actor import Actor
 
+        self._game = game
         self._actors: list[Actor] = []
 
     def init(self):
         for actor in self.actors:
             actor.init()
+
+    @property
+    def game(self):
+        return self._game
 
     @property
     def actors(self):
