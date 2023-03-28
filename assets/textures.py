@@ -16,9 +16,27 @@ class Textures:
 class Buttons:
     def __init__(self):
         self.icons = Icons("assets/textures/buttons/icons/", True)
+        self.play = PlayButtons("assets/textures/buttons/play/", True)
 
     def __str__(self):
         return "assets/textures/buttons/"
+
+
+class PlayButtons:
+    def __init__(self, parent: str, create_hover: bool):
+        self.parent = parent
+        if create_hover:
+            self.hover = PlayButtons(parent + "hover/")
+        self.ai = self.__str__() + "ai.png"
+        self.ai = self.__str__() + "player.png"
+        self.ai = self.__str__() + "lvl1.png"
+        self.ai = self.__str__() + "lvl2.png"
+        self.ai = self.__str__() + "lvl3.png"
+        self.ai = self.__str__() + "lvl4.png"
+        self.ai = self.__str__() + "lvl5.png"
+
+    def __str__(self) -> str:
+        return self.parent
 
 
 class Icons:
