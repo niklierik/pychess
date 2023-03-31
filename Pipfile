@@ -11,7 +11,7 @@ steam = "*"
 [dev-packages]
 
 [requires]
-python_version = "3.10.6"
+python_version = "3.10"
 
 [scripts]
 start = "python main.py"

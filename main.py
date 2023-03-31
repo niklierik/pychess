@@ -37,11 +37,11 @@ class Game:
             self._scene.init()
 
     def init(self):
-        from scenes.mainmenu import MainMenu
-
         """
         Initializes Window
         """
+        from scenes.mainmenu import MainMenu
+
         try:
             self.textures = assets.Textures()
         except Exception as e:
