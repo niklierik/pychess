@@ -7,7 +7,8 @@ class Actor:
 
     def __init__(self, scene: Scene) -> None:
         self._scene = scene
-        self._visible = False
+        self._visible = True
+        self.bounds = pygame.Rect(0, 0, 0, 0)
 
     @property
     def game(self):
@@ -32,12 +33,10 @@ class Actor:
         ...
 
     def show(self):
-        _visible = True
-        ...
+        self._visible = True
 
     def hide(self):
-        _visible = False
-        ...
+        self._visible = False
 
     def dispose(self):
         ...
@@ -56,4 +55,7 @@ class Actor:
         ...
 
     def render(self, screen: pygame.surface.Surface):
+        ...
+
+    def on_window_resize(self, event: pygame.event.Event):
         ...

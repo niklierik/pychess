@@ -3,7 +3,6 @@ import os.path as path
 import platform
 import shutil
 import assets
-import scenes
 
 import pygame
 from stockfish import Stockfish
@@ -21,8 +20,6 @@ class Game:
         self.screen: pygame.Surface = None
         # Clock used by pygame
         self.clock: pygame.time.Clock = None
-        # Textures
-        self.textures = assets.Textures()
 
     @property
     def scene(self):
@@ -41,9 +38,10 @@ class Game:
         Initializes Window
         """
         from scenes.mainmenu import MainMenu
+        from scenes import Viewport
 
         try:
-            self.textures = assets.Textures()
+            self.assets = assets.Assets()
         except Exception as e:
             logging.error(
                 "Unable to load required textures for the game: " + e.__str__()
@@ -51,7 +49,10 @@ class Game:
             exit(1)
             return
         pygame.init()
-        self.screen = pygame.display.set_mode((1280, 720))
+        pygame.display.set_caption("PyChess")
+        pygame.display.set_icon(self.assets.textures.icon)
+        self.screen = pygame.display.set_mode((1280, 720), pygame.RESIZABLE, vsync=1)
+        self.viewport = Viewport(pygame.display.get_window_size())
         self.clock = pygame.time.Clock()
         self.running = True
         self.scene = MainMenu(self)
@@ -65,6 +66,16 @@ class Game:
                 self.running = False
             if self.scene is None:
                 continue
+            if (
+                event.type == pygame.WINDOWRESIZED
+                or event.type == pygame.WINDOWRESTORED
+                or event.type == pygame.WINDOWEXPOSED
+            ):
+                size = pygame.display.get_window_size()
+                event.x = size[0]
+                event.y = size[1]
+                self.scene.on_window_resize(event)
+                self.viewport.screen_size = (event.x, event.y)
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
                 button = event.button
@@ -94,7 +105,15 @@ class Game:
         """
         Disposing game
         """
+        if self.scene is not None:
+            try:
+                self.scene.dispose()
+            except Exception as e:
+                logging.error("Error happened while disposing game: " + e.__str__())
         pygame.quit()
+
+    def quit(self):
+        self.running = False
 
 
 def try_installing_stockfish():
