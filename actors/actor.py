@@ -7,7 +7,7 @@ class Actor:
 
     def __init__(self, scene: Scene) -> None:
         self._scene = scene
-        self._visible = False
+        self._visible = True
 
     @property
     def game(self):
@@ -32,11 +32,11 @@ class Actor:
         ...
 
     def show(self):
-        _visible = True
+        self._visible = True
         ...
 
     def hide(self):
-        _visible = False
+        self._visible = False
         ...
 
     def dispose(self):

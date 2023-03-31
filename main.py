@@ -3,7 +3,6 @@ import os.path as path
 import platform
 import shutil
 import assets
-import scenes
 
 import pygame
 from stockfish import Stockfish
@@ -41,6 +40,7 @@ class Game:
         Initializes Window
         """
         from scenes.mainmenu import MainMenu
+        from scenes import Viewport
 
         try:
             self.textures = assets.Textures()
@@ -52,6 +52,7 @@ class Game:
             return
         pygame.init()
         self.screen = pygame.display.set_mode((1280, 720))
+        self.viewport = Viewport(pygame.display.get_window_size())
         self.clock = pygame.time.Clock()
         self.running = True
         self.scene = MainMenu(self)

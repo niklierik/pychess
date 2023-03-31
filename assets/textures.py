@@ -26,7 +26,7 @@ class PlayButtons:
     def __init__(self, parent: str, create_hover: bool):
         self.parent = parent
         if create_hover:
-            self.hover = PlayButtons(parent + "hover/")
+            self.hover = PlayButtons(parent + "hover/", False)
         self.ai = self.__str__() + "ai.png"
         self.ai = self.__str__() + "player.png"
         self.ai = self.__str__() + "lvl1.png"
@@ -61,7 +61,7 @@ class Icons:
 
 class Pieces:
     def __init__(self):
-        self.regular = PiecesTheme(self.__str__() + "regular")
+        self.regular = PiecesTheme(self.__str__() + "regular/")
 
     def __str__(self):
         return "assets/textures/pieces"

@@ -1,21 +1,20 @@
 from actors.actor import Actor
 import pygame
 from typing import Callable
-import assets
 from scenes.scene import Scene
 
 
 class ButtonClickEvent:
-    pos: tuple[int, int]
-    up: bool
-    button: int
+    def __init__(self, pos: tuple[int, int], up: bool, button: int):
+        self.pos = pos
+        self.up = up
+        self.button = button
 
 
 class Button(Actor):
     def __init__(
         self,
         scene: Scene,
-        text: str,
         pos: tuple[int, int],
         size: tuple[int, int],
         border: int,
@@ -27,7 +26,6 @@ class Button(Actor):
         super().__init__(scene)
         self.action = action
         self.pos = pos
-        self.text = text
         self.inside = False
         self.border = border
         self.padding = padding
@@ -75,10 +73,7 @@ class Button(Actor):
             return
         if self.action is None:
             return
-        event = ButtonClickEvent()
-        event.pos = pos
-        event.button = button
-        event.up = False
+        event = ButtonClickEvent(event.pos, False, event.button)
         self.action(event)
 
     def on_mouse_button_up(
@@ -88,8 +83,5 @@ class Button(Actor):
             return
         if self.action is None:
             return
-        event = ButtonClickEvent()
-        event.pos = pos
-        event.button = button
-        event.up = True
+        event = ButtonClickEvent(event.pos, True, event.button)
         self.action(event)
