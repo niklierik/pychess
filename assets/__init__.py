@@ -1,1 +1,1 @@
-from assets.textures import Textures
+from assets.asset import Assets

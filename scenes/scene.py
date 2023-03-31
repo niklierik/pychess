@@ -45,6 +45,10 @@ class Scene:
             if actor.visible:
                 actor.on_mouse_button_up(event, pos, button)
 
+    def on_window_resize(self, event: pygame.event.Event):
+        for actor in self.actors:
+            actor.on_window_resize(event)
+
     def dispose(self):
         for actor in self.actors:
             actor.dispose()

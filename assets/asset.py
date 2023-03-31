@@ -5,13 +5,23 @@ import pygame
 import os.path as path
 
 
+class Assets:
+    def __init__(self) -> None:
+        self.textures = Textures()
+
+    def __str__(self) -> str:
+        return "assets"
+
+
 class Textures:
     def __init__(self):
         self.board = Board()
         self.buttons = Buttons()
+        self.pieces = Pieces()
+        self.icon = pygame.image.load(path.join(self.__str__(), "icon.png"))
 
     def __str__(self):
-        return "assets/textures/"
+        return "assets/textures"
 
 
 class Buttons:
@@ -20,29 +30,37 @@ class Buttons:
         self.play = PlayButtons(path.join(self.__str__(), "play"), True)
 
     def __str__(self):
-        return "assets/textures/buttons/"
+        return "assets/textures/buttons"
 
 
 class PlayButtons:
-    def __init__(self, parent: str, create_hover: bool):
+    def __init__(self, parent: str, create_subs: bool):
         self.parent = parent
-        if create_hover:
+        if create_subs:
             self.hover = PlayButtons(path.join(self.__str__(), "hover"), False)
+        if create_subs:
+            self.on_pressed = PlayButtons(
+                path.join(self.__str__(), "on_pressed"), False
+            )
         self.ai = pygame.image.load(path.join(self.__str__(), "ai.png"))
-        self.ai = pygame.image.load(path.join(self.__str__(), "player.png"))
-        self.ai = pygame.image.load(path.join(self.__str__(), "lvl1.png"))
-        self.ai = pygame.image.load(path.join(self.__str__(), "lvl2.png"))
-        self.ai = pygame.image.load(path.join(self.__str__(), "lvl3.png"))
-        self.ai = pygame.image.load(path.join(self.__str__(), "lvl4.png"))
-        self.ai = pygame.image.load(path.join(self.__str__(), "lvl5.png"))
+        self.player = pygame.image.load(path.join(self.__str__(), "player.png"))
+        self.lvl1 = pygame.image.load(path.join(self.__str__(), "lvl1.png"))
+        self.lvl2 = pygame.image.load(path.join(self.__str__(), "lvl2.png"))
+        self.lvl3 = pygame.image.load(path.join(self.__str__(), "lvl3.png"))
+        self.lvl4 = pygame.image.load(path.join(self.__str__(), "lvl4.png"))
+        self.lvl5 = pygame.image.load(path.join(self.__str__(), "lvl5.png"))
+        self.lvl = [self.lvl1, self.lvl2, self.lvl3, self.lvl4, self.lvl5]
 
     def __str__(self) -> str:
         return self.parent
 
 
 class Icons:
-    def __init__(self, parent, create_hover: bool):
+    def __init__(self, parent, create_subs: bool):
         self.parent = parent
+        if create_subs:
+            self.hover = Icons(path.join(self.__str__(), "hover"), False)
+            self.on_pressed = Icons(path.join(self.__str__(), "on_pressed"), False)
         self.add = pygame.image.load(path.join(self.__str__(), "add.png"))
         self.close = pygame.image.load(path.join(self.__str__(), "close.png"))
         self.help = pygame.image.load(path.join(self.__str__(), "help.png"))
@@ -55,8 +73,6 @@ class Icons:
             path.join(self.__str__(), "volume_down.png")
         )
         self.volume_up = pygame.image.load(path.join(self.__str__(), "volume_up.png"))
-        if create_hover:
-            self.hover = Icons(path.join(self.__str__(), "hover"), False)
 
     def __str__(self):
         return self.parent
@@ -73,8 +89,8 @@ class Pieces:
 class PiecesTheme:
     def __init__(self, parent: str):
         self.parent = parent
-        self.white = PiecesTextures()
-        self.black = PiecesTextures()
+        self.white = PiecesTextures(path.join(parent, "white"))
+        self.black = PiecesTextures(path.join(parent, "black"))
 
     def __str__(self) -> str:
         return self.parent
@@ -96,11 +112,11 @@ class PiecesTextures:
 
 class Board:
     def __init__(self):
-        self.wooden = BoardTheme(path.join(self.__str__(), "wooden/"))
-        self.regular = BoardTheme(path.join(self.__str__(), "regular/"))
+        self.wooden = BoardTheme(path.join(self.__str__(), "wooden"))
+        self.regular = BoardTheme(path.join(self.__str__(), "regular"))
 
     def __str__(self):
-        return "assets/textures/board/"
+        return "assets/textures/board"
 
 
 class BoardTheme:
