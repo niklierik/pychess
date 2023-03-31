@@ -38,6 +38,7 @@ class Button(Actor):
         rect.width = self.size[0]
         rect.height = self.size[1]
         rect.center = (self.pos[0] + rect.width // 2, self.pos[1] + rect.height // 2)
+        rect = self.game.viewport.get_rect(rect)
         self.texture = pygame.transform.scale(self.texture, (rect.width, rect.height))
         self.hover_texture = pygame.transform.scale(
             self.hover_texture, (rect.width, rect.height)
