@@ -8,9 +8,18 @@ import os.path as path
 class Assets:
     def __init__(self) -> None:
         self.textures = Textures()
+        self.fonts = Fonts()
 
-    def __str__(self) -> str:
+    def __str__() -> str:
         return "assets"
+
+
+class Fonts:
+    def __init__(self) -> None:
+        self.main = pygame.font.Font(path.join(Fonts.__str__(), "main.ttf"))
+
+    def __str__() -> str:
+        return path.join(Assets.__str__(), "fonts")
 
 
 class Textures:
@@ -18,10 +27,10 @@ class Textures:
         self.board = Board()
         self.buttons = Buttons()
         self.pieces = Pieces()
-        self.icon = pygame.image.load(path.join(self.__str__(), "icon.png"))
+        self.icon = pygame.image.load(path.join(Textures.__str__(), "icon.png"))
 
-    def __str__(self):
-        return "assets/textures"
+    def __str__():
+        return path.join(Assets.__str__(), "textures")
 
 
 class Buttons:
@@ -30,7 +39,7 @@ class Buttons:
         self.play = PlayButtons(path.join(self.__str__(), "play"), True)
 
     def __str__(self):
-        return "assets/textures/buttons"
+        return path.join(Textures.__str__(), "buttons")
 
 
 class PlayButtons:
@@ -80,10 +89,10 @@ class Icons:
 
 class Pieces:
     def __init__(self):
-        self.regular = PiecesTheme(path.join(self.__str__(), "regular"))
+        self.regular = PiecesTheme(path.join(Pieces.__str__(), "regular"))
 
-    def __str__(self):
-        return "assets/textures/pieces"
+    def __str__():
+        return path.join(Textures.__str__(), "pieces")
 
 
 class PiecesTheme:
@@ -116,7 +125,7 @@ class Board:
         self.regular = BoardTheme(path.join(self.__str__(), "regular"))
 
     def __str__(self):
-        return "assets/textures/board"
+        return path.join(Textures.__str__(), "board")
 
 
 class BoardTheme:

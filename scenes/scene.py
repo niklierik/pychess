@@ -11,6 +11,9 @@ class Scene:
         self._actors: list[Actor] = []
 
     def init(self):
+        """
+        Runs when game's current scene's changes to this
+        """
         for actor in self.actors:
             actor.init()
 
@@ -52,3 +55,4 @@ class Scene:
     def dispose(self):
         for actor in self.actors:
             actor.dispose()
+        self.actors.clear()

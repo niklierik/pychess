@@ -20,16 +20,16 @@ class Viewport:
     def screen_size(self, screen_size: tuple[int, int]) -> None:
         self._screen_size = screen_size
         self.a = (
-            reference[0] / reference[1] * self._screen_size[1],
-            self._screen_size[1],
+            int(reference[0] / reference[1] * self._screen_size[1]),
+            int(self._screen_size[1]),
         )
         self.width_dif = self._screen_size[0] - self.a[0]
         if self.width_dif < 0:
             self.width_offset = 0
             self.width_dif = 0
             self.a = (
-                self._screen_size[0],
-                reference[1] / reference[0] * self._screen_size[0],
+                int(self._screen_size[0]),
+                int(reference[1] / reference[0] * self._screen_size[0]),
             )
             self.height_dif = self.screen_size[1] - self.a[1]
             self.height_offset = self.height_dif / 2.0
@@ -48,4 +48,4 @@ class Viewport:
         pos = self.get_position(rect.topleft)
         pos = (pos[0] + self.width_offset, pos[1] + self.height_offset)
         size = self.get_position(rect.size)
-        return pygame.Rect(int(pos[0]), int(pos[1]), int(size[0]), int(size[1]))
+        return pygame.Rect(pos[0], pos[1], size[0], size[1])

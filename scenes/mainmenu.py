@@ -1,3 +1,4 @@
+from scenes.gamescene import GameScene
 from scenes.scene import Scene
 
 
@@ -113,7 +114,7 @@ class MainMenu(Scene):
         self.hide_ai_btns()
 
     def on_play_ai(self, event: ButtonClickEvent, lvl: int) -> None:
-        ...
+        self.game.scene = GameScene(self.game)
 
     def hide_play_btns(self):
         for btn in self.play_buttons:

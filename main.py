@@ -40,6 +40,7 @@ class Game:
         from scenes.mainmenu import MainMenu
         from scenes import Viewport
 
+        pygame.init()
         try:
             self.assets = assets.Assets()
         except Exception as e:
@@ -48,7 +49,6 @@ class Game:
             )
             exit(1)
             return
-        pygame.init()
         pygame.display.set_caption("PyChess")
         pygame.display.set_icon(self.assets.textures.icon)
         self.screen = pygame.display.set_mode((1280, 720), pygame.RESIZABLE, vsync=1)
