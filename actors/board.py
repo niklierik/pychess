@@ -13,7 +13,7 @@ class Board(Actor):
     def init(self):
         for index in range(0, self.width * self.height):
             xy = self.xy(index)
-            tile = Tile(self.scene, index, xy[0], xy[1], (50, (1080 - 64 * 8) / 2))
+            tile = Tile(self.scene, index, xy[0], xy[1], (50, (1080 - 64 * 8) // 2))
             self.tiles.append(tile)
             tile.init()
         return super().init()

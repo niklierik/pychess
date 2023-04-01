@@ -49,7 +49,7 @@ class MainMenu(Scene):
         self.play_ai_btn = Button(
             self,
             (100, 10),
-            (57 * 64 / 21, 64),
+            (57 * 64 // 21, 64),
             self.game.assets.textures.buttons.play.ai,
             self.game.assets.textures.buttons.play.hover.ai,
             self.game.assets.textures.buttons.play.on_pressed.ai,
@@ -58,7 +58,7 @@ class MainMenu(Scene):
         self.play_player_btn = Button(
             self,
             (100, 80),
-            (57 * 64 / 21, 64),
+            (57 * 64 // 21, 64),
             self.game.assets.textures.buttons.play.player,
             self.game.assets.textures.buttons.play.hover.player,
             self.game.assets.textures.buttons.play.on_pressed.player,
@@ -78,7 +78,7 @@ class MainMenu(Scene):
                 Button(
                     self,
                     (300, 10 + i * 70),
-                    (57 * 64 / 21, 64),
+                    (57 * 64 // 21, 64),
                     self.game.assets.textures.buttons.play.lvl[i],
                     self.game.assets.textures.buttons.play.hover.lvl[i],
                     self.game.assets.textures.buttons.play.on_pressed.lvl[i],

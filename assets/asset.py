@@ -10,14 +10,16 @@ class Assets:
         self.textures = Textures()
         self.fonts = Fonts()
 
+    @staticmethod
     def __str__() -> str:
         return "assets"
 
 
 class Fonts:
     def __init__(self) -> None:
-        self.main = pygame.font.Font(path.join(Fonts.__str__(), "main.ttf"))
+        self.main = pygame.font.Font(path.join(Fonts.__str__(), "main.ttf"), 20)
 
+    @staticmethod
     def __str__() -> str:
         return path.join(Assets.__str__(), "fonts")
 
@@ -29,6 +31,7 @@ class Textures:
         self.pieces = Pieces()
         self.icon = pygame.image.load(path.join(Textures.__str__(), "icon.png"))
 
+    @staticmethod
     def __str__():
         return path.join(Assets.__str__(), "textures")
 
@@ -91,6 +94,7 @@ class Pieces:
     def __init__(self):
         self.regular = PiecesTheme(path.join(Pieces.__str__(), "regular"))
 
+    @staticmethod
     def __str__():
         return path.join(Textures.__str__(), "pieces")
 

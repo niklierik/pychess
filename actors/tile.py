@@ -1,5 +1,6 @@
 from actors.actor import Actor
 import pygame
+import typing
 
 
 class Tile(Actor):
@@ -22,7 +23,8 @@ class Tile(Actor):
         self.on_window_resize(None)
 
     def render(self, screen: pygame.surface.Surface):
-        screen.blit(self.texture, self.render_bounds.topleft)
+        if self.texture is not None:
+            screen.blit(self.texture, self.render_bounds.topleft)
 
     @property
     def render_bounds(self):
@@ -40,7 +42,7 @@ class Tile(Actor):
             rect.size[1] + 1,
         )
 
-    def on_window_resize(self, event: pygame.event.Event):
+    def on_window_resize(self, event: typing.Union[None, pygame.event.Event]):
         self.texture = pygame.transform.scale(
             self.orig_texture, self.render_bounds.size
         )

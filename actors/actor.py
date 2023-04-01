@@ -1,5 +1,6 @@
 import pygame
 from scenes.scene import Scene
+import typing
 
 
 class Actor:
@@ -57,5 +58,5 @@ class Actor:
     def render(self, screen: pygame.surface.Surface):
         ...
 
-    def on_window_resize(self, event: pygame.event.Event):
+    def on_window_resize(self, event: typing.Union[None, pygame.event.Event]):
         ...

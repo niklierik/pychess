@@ -15,11 +15,11 @@ class Game:
         # Is the game running?
         self.running: bool = False
         # The current scene being rendered
-        self._scene: Scene = None
+        self._scene: Scene = None  # type: ignore
         # Screen used by pygame
-        self.screen: pygame.Surface = None
+        self.screen: pygame.Surface = None  # type: ignore
         # Clock used by pygame
-        self.clock: pygame.time.Clock = None
+        self.clock: pygame.time.Clock = None  # type: ignore
 
     @property
     def scene(self):
