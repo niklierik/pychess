@@ -1,29 +1,26 @@
-import enum
 import actors.board
 import pygame
+import typing
+import game.color
+import game.side
 
-
-class PieceColor(enum.Enum):
-    WHITE = 0
-    BLACK = 1
-
-
-class Side(enum.Enum):
-    QUEEN = 0
-    KING = 1
+Side = game.side.Side
+Color = game.color.PieceColor
 
 
 class Piece:
-    def __init__(self, board: actors.board.Board, color: PieceColor) -> None:
+    def __init__(self, board: actors.board.Board, color: Color) -> None:
         self.pos = (0, 0)
         self.color = color
         self.board = board
+        self.original_texture: typing.Union[None, pygame.Surface] = None
+
+    def add_to_board(self, board: actors.board.Board):
+        if self.tile is not None:
+            self.tile.piece = self
 
     def available_moves(self) -> list[int]:
         return []
-
-    def render(self, screen: pygame.Surface):
-        ...
 
     @property
     def tile(self):
@@ -40,19 +37,28 @@ class Piece:
     def dispose(self):
         self.pos = (-1, -1)
 
+    def on_resize(self):
+        if self.tile is not None and self.original_texture is not None:
+            self.texture = pygame.transform.scale(
+                self.original_texture, self.tile.render_bounds.size
+            )
+
+    def render(self, screen: pygame.Surface):
+        if self.tile is not None and self.texture is not None:
+            screen.blit(self.texture, self.tile.render_bounds.topleft)
+
 
 class Pawn(Piece):
-    def __init__(self, board: actors.board.Board, color: PieceColor, file: int) -> None:
-        super().__init__(board, color)
-        self.pos = (1 if color == PieceColor.BLACK else 6, file)
-        self.direction = 1 if color == PieceColor.BLACK else -1
+    def __init__(self, board: actors.board.Board, c: Color, file: int) -> None:
+        super().__init__(board, c)
+        self.pos = (1 if c != board.player else 6, file)
+        self.direction = 1 if c != board.player else -1
         theme = self.assets.textures.pieces.regular
         self.original_texture = (
-            theme.white.pawn if color == PieceColor.WHITE else theme.black.pawn
+            theme.white.pawn if c == Color.WHITE else theme.black.pawn
         )
         self.on_resize()
-        if self.tile is not None:
-            self.tile.piece = self
+        self.add_to_board(board)
 
     def available_moves(self) -> list[int]:
         moves = []
@@ -60,19 +66,33 @@ class Pawn(Piece):
         forward_tile = self.board.tile(forward)
         if forward_tile is not None and forward_tile.piece is None:
             moves.append(forward)
-        if self.pos[0] == (1 if self.color == PieceColor.BLACK else 6):
+        if self.pos[0] == (1 if self.color != self.board.player else 6):
             moves.append(
                 self.board.index(self.pos[0] + 2 * self.direction, self.pos[1])
             )
 
         return moves
 
-    def on_resize(self):
-        if self.tile is not None:
-            self.texture = pygame.transform.scale(
-                self.original_texture, self.tile.render_bounds.size
-            )
 
-    def render(self, screen: pygame.Surface):
-        if self.tile is not None:
-            screen.blit(self.texture, self.tile.render_bounds.topleft)
+class Rook(Piece):
+    def __init__(
+        self,
+        board: actors.board.Board,
+        c: Color,
+        side: typing.Union[Side, None] = None,
+        pos: typing.Union[None, tuple[int, int]] = None,
+    ) -> None:
+        super().__init__(board, c)
+        if pos is None:
+            if side is None:
+                raise Exception(
+                    "Both side and pos is undefined. This should not happen."
+                )
+            pos = (0 if c != board.player else 7, 0 if side == Side.QUEEN else 7)
+        self.pos = pos
+        theme = self.game.assets.textures.pieces.regular
+        self.original_texture = (
+            theme.white.rook if c == Color.WHITE else theme.black.rook
+        )
+        self.on_resize()
+        self.add_to_board(board)

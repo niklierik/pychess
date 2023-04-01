@@ -2,6 +2,11 @@ from actors.actor import Actor
 from actors.tile import Tile
 import pygame
 import typing
+import game.color
+import game.side
+
+Color = game.color.PieceColor
+Side = game.side.Side
 
 
 class Board(Actor):
@@ -10,6 +15,7 @@ class Board(Actor):
         self.tiles: list[Tile] = []
         self.width = width
         self.height = height
+        self.player = Color.WHITE
 
     def init(self):
         for index in range(0, self.width * self.height):
@@ -25,9 +31,11 @@ class Board(Actor):
     def add_pieces(self):
         import game.pieces
 
-        for file in range(0, 8):
-            game.pieces.Pawn(self, game.pieces.PieceColor.WHITE, file)
-            game.pieces.Pawn(self, game.pieces.PieceColor.BLACK, file)
+        for color in [Color.WHITE, Color.BLACK]:
+            for file in range(0, 8):
+                game.pieces.Pawn(self, color, file)
+            for side in [Side.QUEEN, Side.KING]:
+                game.pieces.Rook(self, color, side)
 
     def xy(self, index: typing.Union[None, int]):
         if index is None:
