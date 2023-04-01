@@ -49,3 +49,7 @@ class Tile(Actor):
         self.texture = pygame.transform.scale(
             self.orig_texture, self.render_bounds.size
         )
+
+    def dispose(self):
+        if self.piece is not None:
+            self.piece.dispose()

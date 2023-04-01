@@ -22,7 +22,11 @@ class Board(Actor):
         return super().init()
 
     def add_pieces(self):
-        ...
+        import game.pieces
+
+        for file in range(0, 8):
+            game.pieces.Pawn(self, game.pieces.PieceColor.WHITE, file)
+            game.pieces.Pawn(self, game.pieces.PieceColor.BLACK, file)
 
     def xy(self, index: typing.Union[None, int]):
         if index is None:
@@ -46,3 +50,7 @@ class Board(Actor):
     def on_window_resize(self, event: pygame.event.Event):
         for tile in self.tiles:
             tile.on_window_resize(event)
+
+    def dispose(self):
+        for tile in self.tiles:
+            tile.dispose()
