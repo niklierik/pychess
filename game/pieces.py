@@ -44,8 +44,8 @@ class Piece:
 class Pawn(Piece):
     def __init__(self, board: actors.board.Board, color: PieceColor, file: int) -> None:
         super().__init__(board, color)
-        self.pos = (file, 1 if color == PieceColor.WHITE else 6)
-        self.direction = 1 if color == PieceColor.WHITE else -1
+        self.pos = (1 if color == PieceColor.BLACK else 6, file)
+        self.direction = 1 if color == PieceColor.BLACK else -1
         theme = self.assets.textures.pieces.regular
         self.original_texture = (
             theme.white.pawn if color == PieceColor.WHITE else theme.black.pawn
@@ -57,10 +57,10 @@ class Pawn(Piece):
     def available_moves(self) -> list[int]:
         moves = []
         forward = self.board.index(self.pos[0] + self.direction, self.pos[1])
-        forwardT = self.board.tile(forward)
-        if forwardT is not None and forwardT.piece is None:
+        forward_tile = self.board.tile(forward)
+        if forward_tile is not None and forward_tile.piece is None:
             moves.append(forward)
-        if self.pos[0] == (1 if self.color == PieceColor.WHITE else 6):
+        if self.pos[0] == (1 if self.color == PieceColor.BLACK else 6):
             moves.append(
                 self.board.index(self.pos[0] + 2 * self.direction, self.pos[1])
             )

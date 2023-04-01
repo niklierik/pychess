@@ -19,7 +19,8 @@ class Board(Actor):
             tile = Tile(self.scene, index, xy[0], xy[1], (50, (1080 - 64 * 8) // 2))
             self.tiles.append(tile)
             tile.init()
-        return super().init()
+        self.add_pieces()
+        super().init()
 
     def add_pieces(self):
         import game.pieces

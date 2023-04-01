@@ -28,6 +28,8 @@ class Tile(Actor):
     def render(self, screen: pygame.surface.Surface):
         if self.texture is not None:
             screen.blit(self.texture, self.render_bounds.topleft)
+        if self.piece is not None:
+            self.piece.render(screen)
 
     @property
     def render_bounds(self):
