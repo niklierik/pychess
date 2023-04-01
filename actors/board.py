@@ -1,30 +1,42 @@
 from actors.actor import Actor
 from actors.tile import Tile
 import pygame
+import typing
 
 
 class Board(Actor):
     def __init__(self, scene, width=8, height=8) -> None:
         super().__init__(scene)
         self.tiles: list[Tile] = []
-        self.width = 8
-        self.height = 8
+        self.width = width
+        self.height = height
 
     def init(self):
         for index in range(0, self.width * self.height):
             xy = self.xy(index)
+            if xy is None:
+                raise Exception("Shouldn't be possible")
             tile = Tile(self.scene, index, xy[0], xy[1], (50, (1080 - 64 * 8) // 2))
             self.tiles.append(tile)
             tile.init()
         return super().init()
 
-    def xy(self, index: int) -> tuple[int, int]:
+    def add_pieces(self):
+        ...
+
+    def xy(self, index: typing.Union[None, int]):
+        if index is None:
+            return None
         return (index % self.width, index // self.width)
 
     def index(self, x: int, y: int):
+        if x < 0 or x >= 8 or y < 0 or y >= 8:
+            return None
         return x * self.width + y
 
-    def tile(self, index: int):
+    def tile(self, index: typing.Union[None, int]):
+        if index is None:
+            return None
         return self.tiles[index]
 
     def render(self, screen):

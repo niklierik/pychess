@@ -8,23 +8,30 @@ class PieceColor(enum.Enum):
 
 
 class Piece:
-    def __init__(self, color: PieceColor) -> None:
+    def __init__(self, board: actors.board.Board, color: PieceColor) -> None:
         self.pos = (0, 0)
         self.color = color
+        self.board = board
 
     def available_moves(self) -> list[int]:
         return []
 
 
 class Pawn(Piece):
-    def __init__(self, color: PieceColor, file: int) -> None:
-        super().__init__(color)
+    def __init__(self, board: actors.board.Board, color: PieceColor, file: int) -> None:
+        super().__init__(board, color)
         self.pos = (file, 1 if color == PieceColor.WHITE else 6)
         self.direction = 1 if color == PieceColor.WHITE else -1
 
-    def available_moves(self, board: actors.board.Board) -> list[int]:
+    def available_moves(self) -> list[int]:
         moves = []
-        moves.append(board.index(self.pos[0] + self.direction, self.pos[1]))
+        forward = self.board.index(self.pos[0] + self.direction, self.pos[1])
+        forwardT = self.board.tile(forward)
+        if forwardT is not None and forwardT.piece is None:
+            moves.append(forward)
         if self.pos[0] == (1 if self.color == PieceColor.WHITE else 6):
-            moves.append(board.index(self.pos[0] + 2 * self.direction, self.pos[1]))
+            moves.append(
+                self.board.index(self.pos[0] + 2 * self.direction, self.pos[1])
+            )
+
         return moves

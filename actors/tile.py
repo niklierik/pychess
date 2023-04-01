@@ -7,6 +7,8 @@ class Tile(Actor):
     def __init__(
         self, scene, index: int, x: int, y: int, offset: tuple[int, int]
     ) -> None:
+        import game.pieces
+
         super().__init__(scene)
         self.x = x
         self.y = y
@@ -14,6 +16,7 @@ class Tile(Actor):
         self.bounds = pygame.Rect(x * 64, y * 64, 64, 64)
         self.texture = None
         self.offset = offset
+        self.piece: typing.Union[None, game.pieces.Piece] = None
 
     def init(self):
         if self.x % 2 != self.y % 2:
