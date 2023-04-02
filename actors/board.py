@@ -268,7 +268,7 @@ class Board(Actor):
                 return
             if _from.piece is not None:
                 _from.piece.tile = to
-            print(uci)
+            print(f"{uci} | {self.chess_board.san(move)}")
             _from.selected = False
             to.selected = False
             self.selected = None
