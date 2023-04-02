@@ -15,6 +15,13 @@ TILESIZE = 64
 WIDTH = 8
 HEIGHT = 8
 
+promotion = {
+    "queen": chess.QUEEN,
+    "rook": chess.ROOK,
+    "bishop": chess.BISHOP,
+    "knight": chess.KNIGHT,
+}
+
 
 class Board(Actor):
     def __init__(
@@ -235,12 +242,28 @@ class Board(Actor):
         to: typing.Union[None, Tile],
         promoteTo: str = "",
     ):
+        import math
+
         if _from is None or to is None:
             return
         # moving
         uci = f"{_from.__str__()}{to.__str__()}{promoteTo}"
         try:
             move: chess.Move = chess.Move.from_uci(uci)
+
+            ### Handle captures
+            if self.chess_board.is_capture(move):
+                if to.piece is not None:  # may be false if en passant
+                    to.piece.tile = None
+                if self.chess_board.is_en_passant(move):
+                    dir = to.y - _from.y
+                    tile = self.tile(self.index(to.x, to.y - dir))
+                    assert tile is not None
+                    assert tile.piece is not None
+                    tile.piece.tile = None
+
+            if len(promoteTo) > 0:
+                move.promotion = promotion[promoteTo]
             if not self.chess_board.is_legal(move):
                 return
             if _from.piece is not None:
