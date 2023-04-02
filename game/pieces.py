@@ -15,16 +15,25 @@ class Piece:
         self.board = board
         self.original_texture: typing.Union[None, pygame.Surface] = None
 
-    def add_to_board(self, board: actors.board.Board):
-        if self.tile is not None:
-            self.tile.piece = self
-
     def available_moves(self) -> list[int]:
         return []
 
     @property
     def tile(self):
         return self.board.tile(self.board.index(self.pos[0], self.pos[1]))
+
+    @tile.setter
+    def tile(self, t):
+        from actors.tile import Tile
+
+        tile: Tile = t
+        if self.tile is not None:
+            self.tile._piece = None
+        if tile is not None:
+            self.pos = (tile.x, tile.y)
+            tile._piece = self
+        else:
+            self.pos = (-1, -1)
 
     @property
     def game(self):
@@ -50,15 +59,15 @@ class Piece:
 
 class Pawn(Piece):
     def __init__(self, board: actors.board.Board, c: Color, file: int) -> None:
+
         super().__init__(board, c)
-        self.pos = (1 if c != board.perspective else 6, file)
+        self.pos = (file, 1 if c != board.perspective else 6)
         self.direction = 1 if c != board.perspective else -1
         theme = self.assets.textures.pieces.regular
         self.original_texture = (
             theme.white.pawn if c == Color.WHITE else theme.black.pawn
         )
         self.on_resize()
-        self.add_to_board(board)
 
     def available_moves(self) -> list[int]:
         moves = []
@@ -94,8 +103,8 @@ class DoublePiece(Piece):
                     "Both side and pos is undefined. This should not happen."
                 )
             pos = (
-                0 if c != board.perspective else 7,
                 files[0] if side == Side.QUEEN else files[1],
+                0 if c != board.perspective else 7,
             )
         self.pos = pos
 
@@ -114,7 +123,6 @@ class Knight(DoublePiece):
             theme.white.knight if c == Color.WHITE else theme.black.knight
         )
         self.on_resize()
-        self.add_to_board(board)
 
 
 class Bishop(DoublePiece):
@@ -131,7 +139,6 @@ class Bishop(DoublePiece):
             theme.white.bishop if c == Color.WHITE else theme.black.bishop
         )
         self.on_resize()
-        self.add_to_board(board)
 
 
 class Rook(DoublePiece):
@@ -149,7 +156,6 @@ class Rook(DoublePiece):
             theme.white.rook if c == Color.WHITE else theme.black.rook
         )
         self.on_resize()
-        self.add_to_board(board)
 
 
 class Queen(Piece):
@@ -160,11 +166,10 @@ class Queen(Piece):
             theme.white.queen if c == Color.WHITE else theme.black.queen
         )
         self.pos = (
-            0 if c != board.perspective else 7,
             3 if Color.WHITE == board.perspective else 4,
+            0 if c != board.perspective else 7,
         )
         self.on_resize()
-        self.add_to_board(board)
 
 
 class King(Piece):
@@ -175,8 +180,7 @@ class King(Piece):
             theme.white.king if c == Color.WHITE else theme.black.king
         )
         self.pos = (
-            0 if c != board.perspective else 7,
             4 if Color.WHITE == board.perspective else 3,
+            0 if c != board.perspective else 7,
         )
         self.on_resize()
-        self.add_to_board(board)

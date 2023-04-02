@@ -55,6 +55,7 @@ class PlayButtons:
                 path.join(self.__str__(), "on_pressed"), False
             )
         self.ai = pygame.image.load(path.join(self.__str__(), "ai.png"))
+        self.analyse = pygame.image.load(path.join(self.__str__(), "analyse.png"))
         self.player = pygame.image.load(path.join(self.__str__(), "player.png"))
         self.lvl1 = pygame.image.load(path.join(self.__str__(), "lvl1.png"))
         self.lvl2 = pygame.image.load(path.join(self.__str__(), "lvl2.png"))
@@ -80,6 +81,7 @@ class Icons:
         self.play = pygame.image.load(path.join(self.__str__(), "play.png"))
         self.remove = pygame.image.load(path.join(self.__str__(), "remove.png"))
         self.restart = pygame.image.load(path.join(self.__str__(), "restart.png"))
+        self.refresh = pygame.image.load(path.join(self.__str__(), "refresh.png"))
         self.settings = pygame.image.load(path.join(self.__str__(), "settings.png"))
         self.volume_down = pygame.image.load(
             path.join(self.__str__(), "volume_down.png")

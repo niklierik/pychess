@@ -15,31 +15,71 @@ class Board(Actor):
         self.tiles: list[Tile] = []
         self.width = width
         self.height = height
-        self.perspective = perspective
+        self._perspective = perspective
+
+    @property
+    def perspective(self):
+        return self._perspective
+
+    @perspective.setter
+    def perspective(self, perspective: Color):
+        from game.pieces import Piece
+
+        self._perspective = perspective
+        pieces: list[typing.Union[None, Piece]] = list(
+            [None] * (self.width * self.height)
+        )
+        for x in range(0, 8):
+            for y in range(0, 8):
+                index = self.index(8 - x - 1, 8 - y - 1)
+                if index is None:
+                    raise Exception("Should not happen.")
+                tile = self.tile(index)
+                if tile is None:
+                    raise Exception("Should not happen.")
+                pieces[index] = tile.piece
+        for x in range(0, 8):
+            for y in range(0, 8):
+                index = self.index(x, y)
+                if index is None:
+                    raise Exception("Should not happen.")
+                tile = self.tile(index)
+                if tile is None:
+                    raise Exception("Should not happen.")
+                tile.piece = pieces[index]
+        for tile in self.tiles:
+            tile.refresh_texture()
 
     def init(self):
-        for index in range(0, self.width * self.height):
-            xy = self.xy(index)
-            if xy is None:
-                raise Exception("Shouldn't be possible")
-            tile = Tile(self.scene, index, xy[0], xy[1], (50, (1080 - 64 * 8) // 2))
-            self.tiles.append(tile)
-            tile.init()
+        # got mixed up with the indicies and coordinates, therefore i pre-allocate the array and then fill up with the correct index-position pair
+        self.tiles = [None] * 64  # type: ignore
+        for x in range(0, 8):
+            for y in range(0, 8):
+                index = self.index(x, y)
+                if index is None:
+                    raise Exception("Shouldn't be possible")
+                tile = Tile(self.scene, self, index, x, y, (50, (1080 - 64 * 8) // 2))
+                self.tiles[index] = tile  # type: ignore
+                tile.init()
         self.add_pieces()
         super().init()
 
     def add_pieces(self):
         import game.pieces
 
+        pieces: list[game.pieces.Piece] = []
         for color in [Color.WHITE, Color.BLACK]:
             for file in range(0, 8):
-                game.pieces.Pawn(self, color, file)
+                pieces.append(game.pieces.Pawn(self, color, file))
             for side in [Side.QUEEN, Side.KING]:
-                game.pieces.Rook(self, color, side)
-                game.pieces.Knight(self, color, side)
-                game.pieces.Bishop(self, color, side)
-            game.pieces.King(self, color)
-            game.pieces.Queen(self, color)
+                pieces.append(game.pieces.Rook(self, color, side))
+                pieces.append(game.pieces.Knight(self, color, side))
+                pieces.append(game.pieces.Bishop(self, color, side))
+            pieces.append(game.pieces.King(self, color))
+            pieces.append(game.pieces.Queen(self, color))
+        for piece in pieces:
+            # registering the pieces to the board
+            piece.tile._piece = piece  # type: ignore
 
     def xy(self, index: typing.Union[None, int]):
         if index is None:
