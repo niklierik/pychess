@@ -10,12 +10,12 @@ Side = game.side.Side
 
 
 class Board(Actor):
-    def __init__(self, scene, width=8, height=8) -> None:
+    def __init__(self, scene, perspective=Color.WHITE, width=8, height=8) -> None:
         super().__init__(scene)
         self.tiles: list[Tile] = []
         self.width = width
         self.height = height
-        self.perspective = Color.WHITE
+        self.perspective = perspective
 
     def init(self):
         for index in range(0, self.width * self.height):
