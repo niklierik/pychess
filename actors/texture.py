@@ -14,6 +14,8 @@ class TextureActor(actors.actor.Actor):
     def on_window_resize(self, _):
         import pygame
 
+        if self.game is None:
+            return
         self.render_bounds = self.game.viewport.get_rect(self.bounds)
         self.texture = pygame.transform.scale(
             self.orig_texture, self.render_bounds.size

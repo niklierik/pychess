@@ -11,6 +11,8 @@ class Actor:
 
     @property
     def game(self):
+        if self.scene is None:
+            return None
         return self.scene.game
 
     @property

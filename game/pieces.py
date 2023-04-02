@@ -37,10 +37,12 @@ class Piece:
 
     @property
     def game(self):
-        return self.board.scene.game
+        return self.board.game
 
     @property
     def assets(self):
+        if self.game is None:
+            return None
         return self.game.assets
 
     def dispose(self):
@@ -63,11 +65,12 @@ class Pawn(Piece):
         super().__init__(board, c)
         self.pos = (file, 1 if c != board.perspective else 6)
         self.direction = 1 if c != board.perspective else -1
-        theme = self.assets.textures.pieces.regular
-        self.original_texture = (
-            theme.white.pawn if c == Color.WHITE else theme.black.pawn
-        )
-        self.on_resize()
+        if self.game is not None and self.assets is not None:
+            theme = self.assets.textures.pieces.regular
+            self.original_texture = (
+                theme.white.pawn if c == Color.WHITE else theme.black.pawn
+            )
+            self.on_resize()
 
     def available_moves(self) -> list[int]:
         moves = []
@@ -118,11 +121,12 @@ class Knight(DoublePiece):
         pos: typing.Union[None, tuple[int, int]] = None,
     ) -> None:
         super().__init__(board, c, (1, 6), side, pos)
-        theme = self.game.assets.textures.pieces.regular
-        self.original_texture = (
-            theme.white.knight if c == Color.WHITE else theme.black.knight
-        )
-        self.on_resize()
+        if self.game is not None:
+            theme = self.game.assets.textures.pieces.regular
+            self.original_texture = (
+                theme.white.knight if c == Color.WHITE else theme.black.knight
+            )
+            self.on_resize()
 
 
 class Bishop(DoublePiece):
@@ -134,11 +138,12 @@ class Bishop(DoublePiece):
         pos: typing.Union[None, tuple[int, int]] = None,
     ) -> None:
         super().__init__(board, c, (2, 5), side, pos)
-        theme = self.game.assets.textures.pieces.regular
-        self.original_texture = (
-            theme.white.bishop if c == Color.WHITE else theme.black.bishop
-        )
-        self.on_resize()
+        if self.game is not None:
+            theme = self.game.assets.textures.pieces.regular
+            self.original_texture = (
+                theme.white.bishop if c == Color.WHITE else theme.black.bishop
+            )
+            self.on_resize()
 
 
 class Rook(DoublePiece):
@@ -150,37 +155,39 @@ class Rook(DoublePiece):
         pos: typing.Union[None, tuple[int, int]] = None,
     ) -> None:
         super().__init__(board, c, (0, 7), side, pos)
-
-        theme = self.game.assets.textures.pieces.regular
-        self.original_texture = (
-            theme.white.rook if c == Color.WHITE else theme.black.rook
-        )
-        self.on_resize()
+        if self.game is not None:
+            theme = self.game.assets.textures.pieces.regular
+            self.original_texture = (
+                theme.white.rook if c == Color.WHITE else theme.black.rook
+            )
+            self.on_resize()
 
 
 class Queen(Piece):
     def __init__(self, board: actors.board.Board, c: Color) -> None:
         super().__init__(board, c)
-        theme = self.game.assets.textures.pieces.regular
-        self.original_texture = (
-            theme.white.queen if c == Color.WHITE else theme.black.queen
-        )
-        self.pos = (
-            3 if Color.WHITE == board.perspective else 4,
-            0 if c != board.perspective else 7,
-        )
-        self.on_resize()
+        if self.game is not None:
+            theme = self.game.assets.textures.pieces.regular
+            self.original_texture = (
+                theme.white.queen if c == Color.WHITE else theme.black.queen
+            )
+            self.pos = (
+                3 if Color.WHITE == board.perspective else 4,
+                0 if c != board.perspective else 7,
+            )
+            self.on_resize()
 
 
 class King(Piece):
     def __init__(self, board: actors.board.Board, c: Color) -> None:
         super().__init__(board, c)
-        theme = self.game.assets.textures.pieces.regular
-        self.original_texture = (
-            theme.white.king if c == Color.WHITE else theme.black.king
-        )
-        self.pos = (
-            4 if Color.WHITE == board.perspective else 3,
-            0 if c != board.perspective else 7,
-        )
-        self.on_resize()
+        if self.game is not None:
+            theme = self.game.assets.textures.pieces.regular
+            self.original_texture = (
+                theme.white.king if c == Color.WHITE else theme.black.king
+            )
+            self.pos = (
+                4 if Color.WHITE == board.perspective else 3,
+                0 if c != board.perspective else 7,
+            )
+            self.on_resize()

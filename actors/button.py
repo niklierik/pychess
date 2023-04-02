@@ -45,6 +45,8 @@ class Button(Actor):
 
     @property
     def render_bounds(self):
+        if self.game is None:
+            return pygame.Rect(0, 0, 0, 0)
         return self.game.viewport.get_rect(self.bounds)
 
     @property

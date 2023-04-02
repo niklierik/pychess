@@ -16,3 +16,4 @@ python_version = "3.10"
 
 [scripts]
 start = "python main.py"
+tests = "python tests.py"

@@ -18,8 +18,21 @@ class Tile(Actor):
         self.bounds = pygame.Rect(x * 64 + offset[0], y * 64 + offset[1], 64, 64)
         self.texture = None
         self.offset = offset
+        self.marked = False
         self.color = 1 if self.x % 2 != self.y % 2 else 0
         self._piece: typing.Union[None, game.pieces.Piece] = None
+        if self.game is None:
+            return
+        if self.color == 0:
+            self.orig_texture = (
+                self.unmarked_texture
+            ) = self.game.assets.textures.board.regular.light
+            self.marked_texture = self.game.assets.textures.board.wooden.light
+        else:
+            self.orig_texture = (
+                self.unmarked_texture
+            ) = self.game.assets.textures.board.regular.dark
+            self.marked_texture = self.game.assets.textures.board.wooden.dark
 
     @property
     def piece(self):
@@ -37,12 +50,6 @@ class Tile(Actor):
         self.refresh_texture()
 
     def refresh_texture(self):
-        from game.color import PieceColor
-
-        if self.color == 0:
-            self.orig_texture = self.game.assets.textures.board.regular.light
-        else:
-            self.orig_texture = self.game.assets.textures.board.regular.dark
         self.on_window_resize(None)
 
     def render(self, screen: pygame.surface.Surface):
@@ -53,6 +60,8 @@ class Tile(Actor):
 
     @property
     def render_bounds(self):
+        if self.game is None:
+            return pygame.Rect(0, 0, 0, 0)
         rect = self.bounds
         rect = self.game.viewport.get_rect(rect)
         return pygame.Rect(
@@ -64,8 +73,13 @@ class Tile(Actor):
         )
 
     def __str__(self) -> str:
-        self.board.perspective
-        return ""
+        from game.color import PieceColor
+
+        files = ["a", "b", "c", "d", "e", "f", "g", "h"]
+        if self.board.perspective == PieceColor.BLACK:
+            files.reverse()
+        rank = 1 + self.y if self.board.perspective == PieceColor.BLACK else 8 - self.y
+        return f"{files[self.x]}{rank}"
 
     def on_window_resize(self, event: typing.Union[None, pygame.event.Event]):
         self.texture = pygame.transform.scale(
@@ -73,6 +87,19 @@ class Tile(Actor):
         )
         if self.piece is not None:
             self.piece.on_resize()
+
+    def on_mouse_button_up(
+        self, event: pygame.event.Event, pos: tuple[int, int], button: int
+    ):
+        print(self.__str__())
+        if button == 1:
+            ...
+        if button == 2:
+            self.marked = not self.marked
+            self.orig_texture = (
+                self.marked_texture if self.marked else self.unmarked_texture
+            )
+            self.refresh_texture()
 
     def dispose(self):
         if self.piece is not None:
