@@ -16,6 +16,7 @@ class Board(Actor):
         self.width = width
         self.height = height
         self._perspective = perspective
+        self.create_tiles()
 
     @property
     def perspective(self):
@@ -38,8 +39,7 @@ class Board(Actor):
             if p is not None:
                 p.tile = tile
 
-    def init(self):
-        # got mixed up with the indicies and coordinates, therefore i pre-allocate the array and then fill up with the correct index-position pair
+    def create_tiles(self):
         self.tiles = [None] * 64  # type: ignore
         for x in range(0, 8):
             for y in range(0, 8):
@@ -50,6 +50,13 @@ class Board(Actor):
                 self.tiles[index] = tile  # type: ignore
                 tile.init()
         self.add_pieces()
+        first: Tile = self.tiles[0]
+        topleft = first.bounds.topleft
+        self.bounds = pygame.Rect(topleft[0], topleft[1], 64 * 8, 64 * 8)
+
+    def init(self):
+        # got mixed up with the indicies and coordinates, therefore i pre-allocate the array and then fill up with the correct index-position pair
+
         super().init()
 
     def add_pieces(self):

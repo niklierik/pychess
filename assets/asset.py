@@ -30,10 +30,46 @@ class Textures:
         self.buttons = Buttons()
         self.pieces = Pieces()
         self.icon = pygame.image.load(path.join(Textures.__str__(), "icon.png"))
+        self.chars = Chars()
 
     @staticmethod
     def __str__():
         return path.join(Assets.__str__(), "textures")
+
+
+class Chars:
+    def __init__(self) -> None:
+        self.a = pygame.image.load(path.join(Chars.__str__(), "a.png"))
+        self.b = pygame.image.load(path.join(Chars.__str__(), "b.png"))
+        self.c = pygame.image.load(path.join(Chars.__str__(), "c.png"))
+        self.d = pygame.image.load(path.join(Chars.__str__(), "d.png"))
+        self.e = pygame.image.load(path.join(Chars.__str__(), "e.png"))
+        self.f = pygame.image.load(path.join(Chars.__str__(), "f.png"))
+        self.g = pygame.image.load(path.join(Chars.__str__(), "g.png"))
+        self.h = pygame.image.load(path.join(Chars.__str__(), "h.png"))
+        self._1 = pygame.image.load(path.join(Chars.__str__(), "1.png"))
+        self._2 = pygame.image.load(path.join(Chars.__str__(), "2.png"))
+        self._3 = pygame.image.load(path.join(Chars.__str__(), "3.png"))
+        self._4 = pygame.image.load(path.join(Chars.__str__(), "4.png"))
+        self._5 = pygame.image.load(path.join(Chars.__str__(), "5.png"))
+        self._6 = pygame.image.load(path.join(Chars.__str__(), "6.png"))
+        self._7 = pygame.image.load(path.join(Chars.__str__(), "7.png"))
+        self._8 = pygame.image.load(path.join(Chars.__str__(), "8.png"))
+        self.files = [self.a, self.b, self.c, self.d, self.e, self.f, self.g, self.h]
+        self.ranks = [
+            self._1,
+            self._2,
+            self._3,
+            self._4,
+            self._5,
+            self._6,
+            self._7,
+            self._8,
+        ]
+
+    @staticmethod
+    def __str__():
+        return path.join(Textures.__str__(), "chars")
 
 
 class Buttons:

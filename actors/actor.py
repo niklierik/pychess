@@ -4,8 +4,6 @@ import typing
 
 
 class Actor:
-    import main
-
     def __init__(self, scene: Scene) -> None:
         self._scene = scene
         self._visible = True

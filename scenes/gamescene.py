@@ -13,7 +13,7 @@ class GameScene(Scene):
         icons = self.game.assets.textures.buttons.icons
         self.change_perspective_btn = Button(
             self,
-            (10, 10),
+            (self.board.bounds.right + 10, self.board.bounds.top),
             (64, 64),
             icons.refresh,
             icons.hover.refresh,

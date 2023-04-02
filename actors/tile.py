@@ -15,7 +15,7 @@ class Tile(Actor):
         self.x = x
         self.y = y
         self.index = index
-        self.bounds = pygame.Rect(x * 64, y * 64, 64, 64)
+        self.bounds = pygame.Rect(x * 64 + offset[0], y * 64 + offset[1], 64, 64)
         self.texture = None
         self.offset = offset
         self.color = 1 if self.x % 2 != self.y % 2 else 0
@@ -40,17 +40,9 @@ class Tile(Actor):
         from game.color import PieceColor
 
         if self.color == 0:
-            self.orig_texture = (
-                self.game.assets.textures.board.regular.light
-                if self.board.perspective == PieceColor.WHITE
-                else self.game.assets.textures.board.regular.dark
-            )
+            self.orig_texture = self.game.assets.textures.board.regular.light
         else:
-            self.orig_texture = (
-                self.game.assets.textures.board.regular.dark
-                if self.board.perspective == PieceColor.WHITE
-                else self.game.assets.textures.board.regular.light
-            )
+            self.orig_texture = self.game.assets.textures.board.regular.dark
         self.on_window_resize(None)
 
     def render(self, screen: pygame.surface.Surface):
@@ -61,11 +53,7 @@ class Tile(Actor):
 
     @property
     def render_bounds(self):
-        rect = self.bounds.copy()
-        rect.topleft = (
-            rect.topleft[0] + self.offset[0],
-            rect.topleft[1] + self.offset[1],
-        )
+        rect = self.bounds
         rect = self.game.viewport.get_rect(rect)
         return pygame.Rect(
             rect.topleft[0],
@@ -83,6 +71,8 @@ class Tile(Actor):
         self.texture = pygame.transform.scale(
             self.orig_texture, self.render_bounds.size
         )
+        if self.piece is not None:
+            self.piece.on_resize()
 
     def dispose(self):
         if self.piece is not None:
