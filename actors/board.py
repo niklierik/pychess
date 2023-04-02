@@ -29,26 +29,14 @@ class Board(Actor):
         pieces: list[typing.Union[None, Piece]] = list(
             [None] * (self.width * self.height)
         )
-        for x in range(0, 8):
-            for y in range(0, 8):
-                index = self.index(8 - x - 1, 8 - y - 1)
-                if index is None:
-                    raise Exception("Should not happen.")
-                tile = self.tile(index)
-                if tile is None:
-                    raise Exception("Should not happen.")
-                pieces[index] = tile.piece
-        for x in range(0, 8):
-            for y in range(0, 8):
-                index = self.index(x, y)
-                if index is None:
-                    raise Exception("Should not happen.")
-                tile = self.tile(index)
-                if tile is None:
-                    raise Exception("Should not happen.")
-                tile.piece = pieces[index]
+        pieces = list(map(lambda tile: tile.piece, self.tiles))
+        pieces.reverse()
         for tile in self.tiles:
             tile.refresh_texture()
+            p = pieces[tile.index]
+            tile.piece = p
+            if p is not None:
+                p.tile = tile
 
     def init(self):
         # got mixed up with the indicies and coordinates, therefore i pre-allocate the array and then fill up with the correct index-position pair
