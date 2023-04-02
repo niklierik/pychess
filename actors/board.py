@@ -1,5 +1,6 @@
 from actors.actor import Actor
 from actors.tile import Tile
+from actors.texture import TextureActor
 import pygame
 import typing
 import game.color
@@ -9,13 +10,21 @@ Color = game.color.PieceColor
 Side = game.side.Side
 
 
+TILESIZE = 64
+WIDTH = 8
+HEIGHT = 8
+
+
 class Board(Actor):
-    def __init__(self, scene, perspective=Color.WHITE, width=8, height=8) -> None:
+    def __init__(self, scene, perspective=Color.WHITE) -> None:
         super().__init__(scene)
         self.tiles: list[Tile] = []
-        self.width = width
-        self.height = height
         self._perspective = perspective
+        self.chars: list[TextureActor] = []
+        self.offset = (50 + TILESIZE, (1080 - TILESIZE * HEIGHT) // 2)
+        self.rank_textures = self.game.assets.textures.chars.ranks
+        self.rank_textures.reverse()
+        self.file_textures = self.game.assets.textures.chars.files
         self.create_tiles()
 
     @property
@@ -27,9 +36,7 @@ class Board(Actor):
         from game.pieces import Piece
 
         self._perspective = perspective
-        pieces: list[typing.Union[None, Piece]] = list(
-            [None] * (self.width * self.height)
-        )
+        pieces: list[typing.Union[None, Piece]] = list([None] * (WIDTH * HEIGHT))
         pieces = list(map(lambda tile: tile.piece, self.tiles))
         pieces.reverse()
         for tile in self.tiles:
@@ -40,23 +47,89 @@ class Board(Actor):
                 p.tile = tile
 
     def create_tiles(self):
-        self.tiles = [None] * 64  # type: ignore
-        for x in range(0, 8):
-            for y in range(0, 8):
+        self.tiles = [None] * TILESIZE  # type: ignore
+        for x in range(0, WIDTH):
+            for y in range(0, HEIGHT):
                 index = self.index(x, y)
                 if index is None:
                     raise Exception("Shouldn't be possible")
-                tile = Tile(self.scene, self, index, x, y, (50, (1080 - 64 * 8) // 2))
+                tile = Tile(self.scene, self, index, x, y, self.offset)
                 self.tiles[index] = tile  # type: ignore
                 tile.init()
         self.add_pieces()
         first: Tile = self.tiles[0]
         topleft = first.bounds.topleft
-        self.bounds = pygame.Rect(topleft[0], topleft[1], 64 * 8, 64 * 8)
+        self.generate_chars()
+        self.bounds = pygame.Rect(
+            topleft[0] - TILESIZE,
+            topleft[1] - TILESIZE,
+            TILESIZE * (WIDTH + 2),
+            TILESIZE * (HEIGHT + 2),
+        )
+
+    def generate_chars(self):
+        self.scene.remove_actors(self.chars)
+        self.chars.clear()
+        for file in range(0, WIDTH):
+            self.chars.append(
+                TextureActor(
+                    self.scene,
+                    self.file_textures[file],
+                    pygame.Rect(
+                        self.offset[0] + TILESIZE // 4 + (file) * TILESIZE,
+                        TILESIZE // 4 + self.offset[1] - TILESIZE,
+                        TILESIZE // 2,
+                        TILESIZE // 2,
+                    ),
+                )
+            )
+            self.chars.append(
+                TextureActor(
+                    self.scene,
+                    self.file_textures[file],
+                    pygame.Rect(
+                        self.offset[0] + TILESIZE // 4 + (file) * TILESIZE,
+                        TILESIZE * (HEIGHT + 1)
+                        + TILESIZE // 4
+                        + self.offset[1]
+                        - TILESIZE,
+                        TILESIZE // 2,
+                        TILESIZE // 2,
+                    ),
+                )
+            )
+
+        for rank in range(0, HEIGHT):
+            self.chars.append(
+                TextureActor(
+                    self.scene,
+                    self.rank_textures[rank],
+                    pygame.Rect(
+                        TILESIZE // 4 + self.offset[0] - TILESIZE,
+                        self.offset[1] + TILESIZE // 4 + (rank) * TILESIZE,
+                        TILESIZE // 2,
+                        TILESIZE // 2,
+                    ),
+                )
+            )
+            self.chars.append(
+                TextureActor(
+                    self.scene,
+                    self.rank_textures[rank],
+                    pygame.Rect(
+                        TILESIZE * (WIDTH + 1)
+                        + TILESIZE // 4
+                        + self.offset[0]
+                        - TILESIZE,
+                        self.offset[1] + TILESIZE // 4 + (rank) * TILESIZE,
+                        TILESIZE // 2,
+                        TILESIZE // 2,
+                    ),
+                )
+            )
+        self.scene.actors.extend(self.chars)
 
     def init(self):
-        # got mixed up with the indicies and coordinates, therefore i pre-allocate the array and then fill up with the correct index-position pair
-
         super().init()
 
     def add_pieces(self):
@@ -64,7 +137,7 @@ class Board(Actor):
 
         pieces: list[game.pieces.Piece] = []
         for color in [Color.WHITE, Color.BLACK]:
-            for file in range(0, 8):
+            for file in range(0, WIDTH):
                 pieces.append(game.pieces.Pawn(self, color, file))
             for side in [Side.QUEEN, Side.KING]:
                 pieces.append(game.pieces.Rook(self, color, side))
@@ -79,12 +152,12 @@ class Board(Actor):
     def xy(self, index: typing.Union[None, int]):
         if index is None:
             return None
-        return (index % self.width, index // self.width)
+        return (index % WIDTH, index // WIDTH)
 
     def index(self, x: int, y: int):
-        if x < 0 or x >= 8 or y < 0 or y >= 8:
+        if x < 0 or x >= WIDTH or y < 0 or y >= HEIGHT:
             return None
-        return x * self.width + y
+        return x * WIDTH + y
 
     def tile(self, index: typing.Union[None, int]):
         if index is None:

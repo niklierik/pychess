@@ -25,6 +25,9 @@ class Scene:
     def actors(self):
         return self._actors
 
+    def remove_actors(self, actors: list):
+        self._actors = list(filter(lambda actor: actor not in actors, self.actors))
+
     def loop(self):
         for actor in self.actors:
             actor.update()
