@@ -129,6 +129,9 @@ class Tile(Actor):
     ):
         #
         if button == 1:
+            if self.selected:
+                self.selected = False
+                return
             print(self.__str__() + " selected")
             for tile in self.board.tiles:
                 tile.selected = False
