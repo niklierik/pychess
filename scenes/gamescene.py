@@ -26,3 +26,9 @@ class GameScene(Scene):
 
     def on_change_perspective(self, _):
         self.board.perspective = self.board.perspective.opposite()
+        if self.board.selected is None:
+            return
+        self.board.selected.selected = False
+        self.board.selected = None
+        for tile in self.board.tiles:
+            tile.can_move_there = False

@@ -17,7 +17,9 @@ HEIGHT = 8
 
 
 class Board(Actor):
-    def __init__(self, scene, perspective=Color.WHITE) -> None:
+    def __init__(
+        self, scene, perspective=Color.WHITE, player: typing.Union[None, Color] = None
+    ) -> None:
         super().__init__(scene)
         self.chess_board = chess.Board()
         self.tiles: list[Tile] = []
@@ -33,6 +35,7 @@ class Board(Actor):
             self.file_textures = []
         self.rank_textures.reverse()
         self.create_tiles()
+        self.selected: typing.Union[Tile, None] = None
 
     @property
     def perspective(self):
@@ -165,6 +168,7 @@ class Board(Actor):
         for piece in pieces:
             # registering the pieces to the board
             piece.tile._piece = piece  # type: ignore
+            piece.tile.find_legal_moves()  # type: ignore
 
     def xy(self, index: typing.Union[None, int]):
         if index is None:
@@ -183,8 +187,8 @@ class Board(Actor):
         file = files.index(uci[0])
         rank = int(uci[1])
         return self.index(
-            rank - 1 if self.perspective == Color.BLACK else 8 - rank,
             file if self.perspective == Color.WHITE else 8 - file - 1,
+            rank - 1 if self.perspective == Color.BLACK else 8 - rank,
         )
 
     def move_from_uci(
@@ -210,7 +214,20 @@ class Board(Actor):
 
     def render(self, screen):
         for tile in self.tiles:
-            tile.render(screen)
+            if self.selected is not tile:
+                tile.render(screen)
+        # render selected last so the selected piece is always visible
+        if self.selected is not None:
+            self.selected.render(screen)
+
+    def get_moves_from(self, tile_from: Tile):
+        moves: list[chess.Move] = []
+        for move in self.chess_board.legal_moves:
+            move: chess.Move = move
+            uci: str = move.uci()
+            if uci.startswith(tile_from.__str__()):
+                moves.append(move)
+        return moves
 
     def update(self, delta):
         for tile in self.tiles:

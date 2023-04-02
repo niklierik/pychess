@@ -3,8 +3,8 @@ import pygame
 import typing
 
 
-ANIM_HEIGHT = 16
-ANIM_SPEED = 2
+ANIM_HEIGHT = 8
+ANIM_SPEED = 3
 
 
 class Tile(Actor):
@@ -29,6 +29,7 @@ class Tile(Actor):
         self.color = 1 if self.x % 2 != self.y % 2 else 0
         self._piece: typing.Union[None, game.pieces.Piece] = None
         self.can_move_there = False
+        self.legal_moves = []
         if self.game is None:
             return
         self.orig_shadow = self.game.assets.textures.pieces.shadow
@@ -53,6 +54,8 @@ class Tile(Actor):
         if self._piece is not None:
             self._piece.tile = None
         self._piece = p
+        for tile in self.board.tiles:
+            tile.find_legal_moves()
         if self._piece is not None:
             self._piece.tile = self
 
@@ -80,6 +83,12 @@ class Tile(Actor):
                     - ANIM_HEIGHT,  # animation
                 ),
             )
+
+    def find_legal_moves(self):
+        if self.piece is None:
+            self.legal_moves = []
+            return
+        self.legal_moves = self.board.get_moves_from(self)
 
     def update(self, delta):
         import math
@@ -127,19 +136,50 @@ class Tile(Actor):
     def on_mouse_button_up(
         self, event: pygame.event.Event, pos: tuple[int, int], button: int
     ):
+        import chess
+
         #
+
         if button == 1:
             if self.selected:
                 self.selected = False
                 return
-            print(self.__str__() + " selected")
+            if self.can_move_there and self.board.selected is not None:
+
+                # moving
+                uci = f"{self.board.selected.__str__()}{self.__str__()}"
+                try:
+                    move = self.board.chess_board.push_uci(uci)
+                    if self.board.selected.piece is not None:
+                        self.board.selected.piece.tile = self
+                    print(f"{move.uci()} | {move.xboard()}")
+                    self.board.selected.selected = False
+                    self.board.selected = None
+                    for tile in self.board.tiles:
+                        tile.can_move_there = False
+                        tile.selected = False
+                        tile.marked = False
+                        tile.find_legal_moves()
+                except ValueError or chess.IllegalMoveError or chess.InvalidMoveError:
+                    ...
+                return
             for tile in self.board.tiles:
                 tile.selected = False
+                tile.can_move_there = False
+            if self.piece is None:
+                return
+            # print(self.__str__() + " selected")
+            for move in self.legal_moves:
+                _, to = self.board.find_tiles(move.uci())
+                if to is None:
+                    continue
+                to.can_move_there = True
             self.selected = True
+            self.board.selected = self
         if button == 3:
             self.marked = not self.marked
-            un = "" if self.marked else "un"
-            print(self.__str__() + f" {un}marked")
+            # un = "" if self.marked else "un"
+            # print(f"{self.__str__()} {un}marked")
             self.orig_texture = (
                 self.marked_texture if self.marked else self.unmarked_texture
             ).copy()
