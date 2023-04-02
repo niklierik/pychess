@@ -229,6 +229,55 @@ class Board(Actor):
                 moves.append(move)
         return moves
 
+    def make_move(
+        self,
+        _from: typing.Union[None, Tile],
+        to: typing.Union[None, Tile],
+        promoteTo: str = "",
+    ):
+        if _from is None or to is None:
+            return
+        # moving
+        uci = f"{_from.__str__()}{to.__str__()}{promoteTo}"
+        try:
+            move: chess.Move = chess.Move.from_uci(uci)
+            if not self.chess_board.is_legal(move):
+                return
+            if _from.piece is not None:
+                _from.piece.tile = to
+            print(uci)
+            _from.selected = False
+            to.selected = False
+            self.selected = None
+
+            #### Handle Castling
+            assert to.piece is not None
+            y = 7 if self.perspective == to.piece.color else 0
+            from_x = to_x = None
+            if self.chess_board.is_kingside_castling(move):
+                from_x = 7 if self.perspective == Color.WHITE else 0
+                to_x = 5 if self.perspective == Color.WHITE else 2
+            if self.chess_board.is_queenside_castling(move):
+                from_x = 0 if self.perspective == Color.WHITE else 7
+                to_x = 3 if self.perspective == Color.WHITE else 4
+            if from_x is not None and to_x is not None:
+                _from = self.tile(self.index(from_x, y))
+                to = self.tile(self.index(to_x, y))
+                assert _from is not None and to is not None
+                assert _from.piece is not None
+                _from.piece.tile = to
+
+            ### Clean up
+            self.chess_board.push(move)
+            for tile in self.tiles:
+                tile.can_move_there = False
+                tile.selected = False
+                tile.marked = False
+                tile.find_legal_moves()
+        except ValueError or chess.IllegalMoveError or chess.InvalidMoveError as e:
+            print(e)
+        return
+
     def update(self, delta):
         for tile in self.tiles:
             tile.update(delta)

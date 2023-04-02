@@ -137,6 +137,7 @@ class Tile(Actor):
         self, event: pygame.event.Event, pos: tuple[int, int], button: int
     ):
         import chess
+        from game.color import PieceColor
 
         #
 
@@ -145,23 +146,7 @@ class Tile(Actor):
                 self.selected = False
                 return
             if self.can_move_there and self.board.selected is not None:
-
-                # moving
-                uci = f"{self.board.selected.__str__()}{self.__str__()}"
-                try:
-                    move = self.board.chess_board.push_uci(uci)
-                    if self.board.selected.piece is not None:
-                        self.board.selected.piece.tile = self
-                    print(f"{move.uci()} | {move.xboard()}")
-                    self.board.selected.selected = False
-                    self.board.selected = None
-                    for tile in self.board.tiles:
-                        tile.can_move_there = False
-                        tile.selected = False
-                        tile.marked = False
-                        tile.find_legal_moves()
-                except ValueError or chess.IllegalMoveError or chess.InvalidMoveError:
-                    ...
+                self.board.make_move(self.board.selected, self)
                 return
             for tile in self.board.tiles:
                 tile.selected = False

@@ -143,7 +143,7 @@ class MainMenu(Scene):
             btn.hide()
 
     def hide_player_btns(self):
-        ...
+        pass
 
     def dispose(self):
         return super().dispose()

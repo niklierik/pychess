@@ -31,7 +31,7 @@ class Actor:
             self.hide()
 
     def init(self):
-        ...
+        pass
 
     def show(self):
         self._visible = True
@@ -40,23 +40,23 @@ class Actor:
         self._visible = False
 
     def dispose(self):
-        ...
+        pass
 
     def on_mouse_button_down(
         self, event: pygame.event.Event, pos: tuple[int, int], button: int
     ):
-        ...
+        pass
 
     def on_mouse_button_up(
         self, event: pygame.event.Event, pos: tuple[int, int], button: int
     ):
-        ...
+        pass
 
     def update(self, delta: float):
-        ...
+        pass
 
     def render(self, screen: pygame.surface.Surface):
-        ...
+        pass
 
     def on_window_resize(self, event: typing.Union[None, pygame.event.Event]):
-        ...
+        pass

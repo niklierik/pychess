@@ -90,11 +90,11 @@ class Button(Actor):
 
     def on_mouse_enters(self, pos: tuple[int, int]):
         # self.active_texture = self.hover_texture
-        ...
+        pass
 
     def on_mouse_exits(self, pos: tuple[int, int]):
         # self.active_texture = self.texture
-        ...
+        pass
 
     def on_mouse_button_down(
         self, _event: pygame.event.Event, pos: tuple[int, int], button: int
