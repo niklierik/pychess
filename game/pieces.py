@@ -74,12 +74,17 @@ class Pawn(Piece):
         return moves
 
 
-class Rook(Piece):
+# Pieces that can be found on the board 2 times (rooks, knights, bishops)
+# Has its own class because common placing mechanism
+
+
+class DoublePiece(Piece):
     def __init__(
         self,
         board: actors.board.Board,
         c: Color,
-        side: typing.Union[Side, None] = None,
+        files: tuple[int, int],
+        side: typing.Union[Side, None],
         pos: typing.Union[None, tuple[int, int]] = None,
     ) -> None:
         super().__init__(board, c)
@@ -88,8 +93,57 @@ class Rook(Piece):
                 raise Exception(
                     "Both side and pos is undefined. This should not happen."
                 )
-            pos = (0 if c != board.player else 7, 0 if side == Side.QUEEN else 7)
+            pos = (
+                0 if c != board.player else 7,
+                files[0] if side == Side.QUEEN else files[1],
+            )
         self.pos = pos
+
+
+class Knight(DoublePiece):
+    def __init__(
+        self,
+        board: actors.board.Board,
+        c: Color,
+        side: typing.Union[Side, None],
+        pos: typing.Union[None, tuple[int, int]] = None,
+    ) -> None:
+        super().__init__(board, c, (1, 6), side, pos)
+        theme = self.game.assets.textures.pieces.regular
+        self.original_texture = (
+            theme.white.knight if c == Color.WHITE else theme.black.knight
+        )
+        self.on_resize()
+        self.add_to_board(board)
+
+
+class Bishop(DoublePiece):
+    def __init__(
+        self,
+        board: actors.board.Board,
+        c: Color,
+        side: typing.Union[Side, None],
+        pos: typing.Union[None, tuple[int, int]] = None,
+    ) -> None:
+        super().__init__(board, c, (2, 5), side, pos)
+        theme = self.game.assets.textures.pieces.regular
+        self.original_texture = (
+            theme.white.bishop if c == Color.WHITE else theme.black.bishop
+        )
+        self.on_resize()
+        self.add_to_board(board)
+
+
+class Rook(DoublePiece):
+    def __init__(
+        self,
+        board: actors.board.Board,
+        c: Color,
+        side: typing.Union[Side, None] = None,
+        pos: typing.Union[None, tuple[int, int]] = None,
+    ) -> None:
+        super().__init__(board, c, (0, 7), side, pos)
+
         theme = self.game.assets.textures.pieces.regular
         self.original_texture = (
             theme.white.rook if c == Color.WHITE else theme.black.rook

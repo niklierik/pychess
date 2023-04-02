@@ -36,6 +36,8 @@ class Board(Actor):
                 game.pieces.Pawn(self, color, file)
             for side in [Side.QUEEN, Side.KING]:
                 game.pieces.Rook(self, color, side)
+                game.pieces.Knight(self, color, side)
+                game.pieces.Bishop(self, color, side)
 
     def xy(self, index: typing.Union[None, int]):
         if index is None:
