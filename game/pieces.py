@@ -51,8 +51,8 @@ class Piece:
 class Pawn(Piece):
     def __init__(self, board: actors.board.Board, c: Color, file: int) -> None:
         super().__init__(board, c)
-        self.pos = (1 if c != board.player else 6, file)
-        self.direction = 1 if c != board.player else -1
+        self.pos = (1 if c != board.perspective else 6, file)
+        self.direction = 1 if c != board.perspective else -1
         theme = self.assets.textures.pieces.regular
         self.original_texture = (
             theme.white.pawn if c == Color.WHITE else theme.black.pawn
@@ -66,7 +66,7 @@ class Pawn(Piece):
         forward_tile = self.board.tile(forward)
         if forward_tile is not None and forward_tile.piece is None:
             moves.append(forward)
-        if self.pos[0] == (1 if self.color != self.board.player else 6):
+        if self.pos[0] == (1 if self.color != self.board.perspective else 6):
             moves.append(
                 self.board.index(self.pos[0] + 2 * self.direction, self.pos[1])
             )
@@ -94,7 +94,7 @@ class DoublePiece(Piece):
                     "Both side and pos is undefined. This should not happen."
                 )
             pos = (
-                0 if c != board.player else 7,
+                0 if c != board.perspective else 7,
                 files[0] if side == Side.QUEEN else files[1],
             )
         self.pos = pos

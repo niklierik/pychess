@@ -15,7 +15,7 @@ class Board(Actor):
         self.tiles: list[Tile] = []
         self.width = width
         self.height = height
-        self.player = Color.WHITE
+        self.perspective = Color.WHITE
 
     def init(self):
         for index in range(0, self.width * self.height):
