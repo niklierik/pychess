@@ -35,6 +35,12 @@ class Board(Actor):
     def perspective(self, perspective: Color):
         from game.pieces import Piece
 
+        if perspective == self._perspective:
+            return
+
+        self.rank_textures.reverse()
+        self.file_textures.reverse()
+        self.generate_chars()
         self._perspective = perspective
         pieces: list[typing.Union[None, Piece]] = list([None] * (WIDTH * HEIGHT))
         pieces = list(map(lambda tile: tile.piece, self.tiles))
