@@ -54,9 +54,18 @@ class Piece:
                 self.original_texture, self.tile.render_bounds.size
             )
 
-    def render(self, screen: pygame.Surface):
+    def render(self, screen: pygame.Surface, anim_offset: tuple[float, float]):
+        if self.game is None:
+            return
+        anim_offset = self.game.viewport.get_position(anim_offset)
         if self.tile is not None and self.texture is not None:
-            screen.blit(self.texture, self.tile.render_bounds.topleft)
+            screen.blit(
+                self.texture,
+                (
+                    self.tile.render_bounds.topleft[0] + anim_offset[0],
+                    self.tile.render_bounds.topleft[1] + anim_offset[1],
+                ),
+            )
 
 
 class Pawn(Piece):

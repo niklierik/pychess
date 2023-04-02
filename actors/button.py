@@ -78,7 +78,7 @@ class Button(Actor):
         # print(self.active_texture)
         return super().on_window_resize(event)
 
-    def update(self):
+    def update(self, delta: float):
         mousepos = pygame.mouse.get_pos()
         if not self.inside and self.render_bounds.collidepoint(mousepos):
             self.on_mouse_enters(mousepos)
@@ -86,7 +86,7 @@ class Button(Actor):
         if self.inside and not self.render_bounds.collidepoint(mousepos):
             self.on_mouse_exits(mousepos)
             self.inside = False
-        super().update()
+        super().update(delta)
 
     def on_mouse_enters(self, pos: tuple[int, int]):
         # self.active_texture = self.hover_texture

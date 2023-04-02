@@ -28,9 +28,9 @@ class Scene:
     def remove_actors(self, actors: list):
         self._actors = list(filter(lambda actor: actor not in actors, self.actors))
 
-    def loop(self):
+    def loop(self, delta: float):
         for actor in self.actors:
-            actor.update()
+            actor.update(delta)
 
     def render(self, screen: pygame.surface.Surface):
         for actor in self.actors:

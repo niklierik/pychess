@@ -52,7 +52,7 @@ class Actor:
     ):
         ...
 
-    def update(self):
+    def update(self, delta: float):
         ...
 
     def render(self, screen: pygame.surface.Surface):

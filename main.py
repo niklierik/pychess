@@ -85,12 +85,12 @@ class Game:
                 button = event.button
                 self.scene.on_mouse_button_down(event, pos, button)
 
-    def loop(self):
+    def loop(self, delta: float):
         """
         Run game logic
         """
         if self.scene is not None:
-            self.scene.loop()
+            self.scene.loop(delta)
 
     def render(self):
         """
@@ -152,11 +152,14 @@ def main():
     """
     game = Game()
     game.init()
+    getTicksLastFrame = 0
+    delta = 0
     while game.running:
         game.events()
-        game.loop()
+        game.loop(delta / 1000.0)
         game.render()
-        game.clock.tick(60)
+        delta = game.clock.tick(60)
+        # print("FPS: " + game.clock.get_fps().__str__())
     game.clean()
 
 

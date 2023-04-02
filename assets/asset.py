@@ -132,6 +132,8 @@ class Pieces:
     def __init__(self):
         self.regular = PiecesTheme(path.join(Pieces.__str__(), "regular"))
         self.wooden = PiecesTheme(path.join(Pieces.__str__(), "wooden"))
+        self.shadow = pygame.image.load(path.join(Pieces.__str__(), "shadow.png"))
+        self.circle = pygame.image.load(path.join(Pieces.__str__(), "circle.png"))
 
     @staticmethod
     def __str__():

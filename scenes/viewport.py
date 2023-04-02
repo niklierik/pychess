@@ -38,7 +38,7 @@ class Viewport:
             self.height_offset = 0
             self.height_dif = 0
 
-    def get_position(self, reference_pos: tuple[int, int]) -> tuple[float, float]:
+    def get_position(self, reference_pos: tuple[float, float]) -> tuple[float, float]:
         return (
             float(self.a[0]) / float(reference[0]) * float(reference_pos[0]),
             float(self.a[1]) / float(reference[1]) * float(reference_pos[1]),

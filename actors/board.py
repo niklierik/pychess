@@ -212,6 +212,10 @@ class Board(Actor):
         for tile in self.tiles:
             tile.render(screen)
 
+    def update(self, delta):
+        for tile in self.tiles:
+            tile.update(delta)
+
     def on_mouse_button_up(
         self, event: pygame.event.Event, pos: tuple[int, int], button: int
     ):
