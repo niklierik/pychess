@@ -13,7 +13,7 @@ class Viewport:
         self.screen_size = screen_size
 
     @property
-    def screen_size(self) -> None:
+    def screen_size(self) -> tuple[int, int]:
         return self._screen_size
 
     @screen_size.setter

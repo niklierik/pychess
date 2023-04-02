@@ -2,7 +2,7 @@ import logging
 import os.path as path
 import platform
 import shutil
-import assets
+import assets.asset
 
 import pygame
 from stockfish import Stockfish
@@ -10,7 +10,7 @@ from stockfish import Stockfish
 
 class Game:
     def __init__(self) -> None:
-        from scenes import Scene
+        from scenes.scene import Scene
 
         # Is the game running?
         self.running: bool = False
@@ -38,11 +38,11 @@ class Game:
         Initializes Window
         """
         from scenes.mainmenu import MainMenu
-        from scenes import Viewport
+        from scenes.viewport import Viewport
 
         pygame.init()
         try:
-            self.assets = assets.Assets()
+            self.assets = assets.asset.Assets()
         except Exception as e:
             logging.error(
                 "Unable to load required textures for the game: " + e.__str__()

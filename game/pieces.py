@@ -150,3 +150,33 @@ class Rook(DoublePiece):
         )
         self.on_resize()
         self.add_to_board(board)
+
+
+class Queen(Piece):
+    def __init__(self, board: actors.board.Board, c: Color) -> None:
+        super().__init__(board, c)
+        theme = self.game.assets.textures.pieces.regular
+        self.original_texture = (
+            theme.white.queen if c == Color.WHITE else theme.black.queen
+        )
+        self.pos = (
+            0 if c != board.perspective else 7,
+            3 if Color.WHITE == board.perspective else 4,
+        )
+        self.on_resize()
+        self.add_to_board(board)
+
+
+class King(Piece):
+    def __init__(self, board: actors.board.Board, c: Color) -> None:
+        super().__init__(board, c)
+        theme = self.game.assets.textures.pieces.regular
+        self.original_texture = (
+            theme.white.king if c == Color.WHITE else theme.black.king
+        )
+        self.pos = (
+            0 if c != board.perspective else 7,
+            4 if Color.WHITE == board.perspective else 3,
+        )
+        self.on_resize()
+        self.add_to_board(board)

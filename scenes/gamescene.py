@@ -1,4 +1,4 @@
-from scenes import Scene
+from scenes.scene import Scene
 
 
 class GameScene(Scene):

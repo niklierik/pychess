@@ -93,6 +93,7 @@ class Icons:
 class Pieces:
     def __init__(self):
         self.regular = PiecesTheme(path.join(Pieces.__str__(), "regular"))
+        self.wooden = PiecesTheme(path.join(Pieces.__str__(), "wooden"))
 
     @staticmethod
     def __str__():

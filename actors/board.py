@@ -38,6 +38,8 @@ class Board(Actor):
                 game.pieces.Rook(self, color, side)
                 game.pieces.Knight(self, color, side)
                 game.pieces.Bishop(self, color, side)
+            game.pieces.King(self, color)
+            game.pieces.Queen(self, color)
 
     def xy(self, index: typing.Union[None, int]):
         if index is None:
