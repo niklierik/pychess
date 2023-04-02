@@ -24,15 +24,14 @@ promotion = {
 
 
 class Board(Actor):
-    def __init__(
-        self, scene, perspective=Color.WHITE, player: typing.Union[None, Color] = None
-    ) -> None:
+    def __init__(self, scene, perspective=Color.WHITE) -> None:
         super().__init__(scene)
         self.chess_board = chess.Board()
         self.tiles: list[Tile] = []
         self._perspective = perspective
         self.chars: list[TextureActor] = []
         self.offset = (50 + TILESIZE, (1080 - TILESIZE * HEIGHT) // 2)
+        self.turn_of = Color.WHITE
         if self.game is not None:
             self.rank_textures = self.game.assets.textures.chars.ranks
             self.file_textures = self.game.assets.textures.chars.files
@@ -198,6 +197,11 @@ class Board(Actor):
             rank - 1 if self.perspective == Color.BLACK else 8 - rank,
         )
 
+    def clear_selection(self):
+        for tile in self.tiles:
+            tile.selected = False
+            tile.can_move_there = False
+
     def move_from_uci(
         self, uci: str
     ) -> tuple[typing.Union[None, int], typing.Union[None, int]]:
@@ -299,6 +303,7 @@ class Board(Actor):
                 tile.find_legal_moves()
         except ValueError or chess.IllegalMoveError or chess.InvalidMoveError as e:
             print(e)
+        self.turn_of = self.turn_of.opposite()
         return
 
     def update(self, delta):

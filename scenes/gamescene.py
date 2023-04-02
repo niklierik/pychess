@@ -1,15 +1,21 @@
 from scenes.scene import Scene
+import typing
+from game.color import PieceColor
 
 
 class GameScene(Scene):
     def __init__(self, game) -> None:
+        from game.controllers import Controller, PlayerController
+        from actors.board import Board
+
         super().__init__(game)
+        self.board = Board(self)
+        self.white_player: Controller = PlayerController(self.board)
+        self.black_player: Controller = PlayerController(self.board)
 
     def init(self):
-        from actors.board import Board
         from actors.button import Button
 
-        self.board = Board(self)
         icons = self.game.assets.textures.buttons.icons
         self.change_perspective_btn = Button(
             self,
@@ -23,6 +29,13 @@ class GameScene(Scene):
         self.actors.append(self.board)
         self.actors.append(self.change_perspective_btn)
         return super().init()
+
+    @property
+    def controllers(self):
+        return [self.white_player, self.black_player]
+
+    def controller_of(self, color: PieceColor):
+        return self.controllers[color.value]
 
     def on_change_perspective(self, _):
         self.board.perspective = self.board.perspective.opposite()

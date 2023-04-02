@@ -1,6 +1,7 @@
 from actors.actor import Actor
 import pygame
 import typing
+import scenes.gamescene
 
 
 ANIM_HEIGHT = 8
@@ -133,25 +134,36 @@ class Tile(Actor):
         if self.piece is not None:
             self.piece.on_resize()
 
+    @property
+    def scene(self) -> scenes.gamescene.GameScene:
+        return super().scene  # type: ignore
+
     def on_mouse_button_up(
         self, event: pygame.event.Event, pos: tuple[int, int], button: int
     ):
-        import chess
         from game.color import PieceColor
+        from game.controllers import PlayerController
 
         #
 
-        if button == 1:
+        if button == 1:  # Left Click
             if self.selected:
                 self.selected = False
                 return
             if self.can_move_there and self.board.selected is not None:
                 self.board.make_move(self.board.selected, self)
                 return
-            for tile in self.board.tiles:
-                tile.selected = False
-                tile.can_move_there = False
+            self.board.clear_selection()
             if self.piece is None:
+                return
+            if (
+                not isinstance(
+                    self.scene.controller_of(self.piece.color), PlayerController
+                )
+                or self.piece.color != self.board.turn_of
+            ):
+
+                self.board.clear_selection()
                 return
             # print(self.__str__() + " selected")
             for move in self.legal_moves:
@@ -161,7 +173,7 @@ class Tile(Actor):
                 to.can_move_there = True
             self.selected = True
             self.board.selected = self
-        if button == 3:
+        if button == 3:  # Right Click
             self.marked = not self.marked
             # un = "" if self.marked else "un"
             # print(f"{self.__str__()} {un}marked")
