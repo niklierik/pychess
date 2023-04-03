@@ -8,9 +8,20 @@ import os.path as path
 class Assets:
     def __init__(self) -> None:
         self.textures = Textures()
+        self.fonts = Fonts()
 
-    def __str__(self) -> str:
+    @staticmethod
+    def __str__() -> str:
         return "assets"
+
+
+class Fonts:
+    def __init__(self) -> None:
+        self.main = pygame.font.Font(path.join(Fonts.__str__(), "main.ttf"), 20)
+
+    @staticmethod
+    def __str__() -> str:
+        return path.join(Assets.__str__(), "fonts")
 
 
 class Textures:
@@ -18,10 +29,47 @@ class Textures:
         self.board = Board()
         self.buttons = Buttons()
         self.pieces = Pieces()
-        self.icon = pygame.image.load(path.join(self.__str__(), "icon.png"))
+        self.icon = pygame.image.load(path.join(Textures.__str__(), "icon.png"))
+        self.chars = Chars()
 
-    def __str__(self):
-        return "assets/textures"
+    @staticmethod
+    def __str__():
+        return path.join(Assets.__str__(), "textures")
+
+
+class Chars:
+    def __init__(self) -> None:
+        self.a = pygame.image.load(path.join(Chars.__str__(), "a.png"))
+        self.b = pygame.image.load(path.join(Chars.__str__(), "b.png"))
+        self.c = pygame.image.load(path.join(Chars.__str__(), "c.png"))
+        self.d = pygame.image.load(path.join(Chars.__str__(), "d.png"))
+        self.e = pygame.image.load(path.join(Chars.__str__(), "e.png"))
+        self.f = pygame.image.load(path.join(Chars.__str__(), "f.png"))
+        self.g = pygame.image.load(path.join(Chars.__str__(), "g.png"))
+        self.h = pygame.image.load(path.join(Chars.__str__(), "h.png"))
+        self._1 = pygame.image.load(path.join(Chars.__str__(), "1.png"))
+        self._2 = pygame.image.load(path.join(Chars.__str__(), "2.png"))
+        self._3 = pygame.image.load(path.join(Chars.__str__(), "3.png"))
+        self._4 = pygame.image.load(path.join(Chars.__str__(), "4.png"))
+        self._5 = pygame.image.load(path.join(Chars.__str__(), "5.png"))
+        self._6 = pygame.image.load(path.join(Chars.__str__(), "6.png"))
+        self._7 = pygame.image.load(path.join(Chars.__str__(), "7.png"))
+        self._8 = pygame.image.load(path.join(Chars.__str__(), "8.png"))
+        self.files = [self.a, self.b, self.c, self.d, self.e, self.f, self.g, self.h]
+        self.ranks = [
+            self._1,
+            self._2,
+            self._3,
+            self._4,
+            self._5,
+            self._6,
+            self._7,
+            self._8,
+        ]
+
+    @staticmethod
+    def __str__():
+        return path.join(Textures.__str__(), "chars")
 
 
 class Buttons:
@@ -30,7 +78,7 @@ class Buttons:
         self.play = PlayButtons(path.join(self.__str__(), "play"), True)
 
     def __str__(self):
-        return "assets/textures/buttons"
+        return path.join(Textures.__str__(), "buttons")
 
 
 class PlayButtons:
@@ -43,6 +91,7 @@ class PlayButtons:
                 path.join(self.__str__(), "on_pressed"), False
             )
         self.ai = pygame.image.load(path.join(self.__str__(), "ai.png"))
+        self.analyse = pygame.image.load(path.join(self.__str__(), "analyse.png"))
         self.player = pygame.image.load(path.join(self.__str__(), "player.png"))
         self.lvl1 = pygame.image.load(path.join(self.__str__(), "lvl1.png"))
         self.lvl2 = pygame.image.load(path.join(self.__str__(), "lvl2.png"))
@@ -68,6 +117,7 @@ class Icons:
         self.play = pygame.image.load(path.join(self.__str__(), "play.png"))
         self.remove = pygame.image.load(path.join(self.__str__(), "remove.png"))
         self.restart = pygame.image.load(path.join(self.__str__(), "restart.png"))
+        self.refresh = pygame.image.load(path.join(self.__str__(), "refresh.png"))
         self.settings = pygame.image.load(path.join(self.__str__(), "settings.png"))
         self.volume_down = pygame.image.load(
             path.join(self.__str__(), "volume_down.png")
@@ -80,10 +130,14 @@ class Icons:
 
 class Pieces:
     def __init__(self):
-        self.regular = PiecesTheme(path.join(self.__str__(), "regular"))
+        self.regular = PiecesTheme(path.join(Pieces.__str__(), "regular"))
+        self.wooden = PiecesTheme(path.join(Pieces.__str__(), "wooden"))
+        self.shadow = pygame.image.load(path.join(Pieces.__str__(), "shadow.png"))
+        self.circle = pygame.image.load(path.join(Pieces.__str__(), "circle.png"))
 
-    def __str__(self):
-        return "assets/textures/pieces"
+    @staticmethod
+    def __str__():
+        return path.join(Textures.__str__(), "pieces")
 
 
 class PiecesTheme:
@@ -116,7 +170,7 @@ class Board:
         self.regular = BoardTheme(path.join(self.__str__(), "regular"))
 
     def __str__(self):
-        return "assets/textures/board"
+        return path.join(Textures.__str__(), "board")
 
 
 class BoardTheme:

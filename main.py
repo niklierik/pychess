@@ -2,7 +2,7 @@ import logging
 import os.path as path
 import platform
 import shutil
-import assets
+import assets.asset
 
 import pygame
 from stockfish import Stockfish
@@ -10,16 +10,16 @@ from stockfish import Stockfish
 
 class Game:
     def __init__(self) -> None:
-        from scenes import Scene
+        from scenes.scene import Scene
 
         # Is the game running?
         self.running: bool = False
         # The current scene being rendered
-        self._scene: Scene = None
+        self._scene: Scene = None  # type: ignore
         # Screen used by pygame
-        self.screen: pygame.Surface = None
+        self.screen: pygame.Surface = None  # type: ignore
         # Clock used by pygame
-        self.clock: pygame.time.Clock = None
+        self.clock: pygame.time.Clock = None  # type: ignore
 
     @property
     def scene(self):
@@ -38,17 +38,17 @@ class Game:
         Initializes Window
         """
         from scenes.mainmenu import MainMenu
-        from scenes import Viewport
+        from scenes.viewport import Viewport
 
+        pygame.init()
         try:
-            self.assets = assets.Assets()
+            self.assets = assets.asset.Assets()
         except Exception as e:
             logging.error(
                 "Unable to load required textures for the game: " + e.__str__()
             )
             exit(1)
             return
-        pygame.init()
         pygame.display.set_caption("PyChess")
         pygame.display.set_icon(self.assets.textures.icon)
         self.screen = pygame.display.set_mode((1280, 720), pygame.RESIZABLE, vsync=1)
@@ -85,12 +85,12 @@ class Game:
                 button = event.button
                 self.scene.on_mouse_button_down(event, pos, button)
 
-    def loop(self):
+    def loop(self, delta: float):
         """
         Run game logic
         """
         if self.scene is not None:
-            self.scene.loop()
+            self.scene.loop(delta)
 
     def render(self):
         """
@@ -152,11 +152,14 @@ def main():
     """
     game = Game()
     game.init()
+    getTicksLastFrame = 0
+    delta = 0
     while game.running:
         game.events()
-        game.loop()
+        game.loop(delta / 1000.0)
         game.render()
-        game.clock.tick(60)
+        delta = game.clock.tick(60)
+        # print("FPS: " + game.clock.get_fps().__str__())
     game.clean()
 
 

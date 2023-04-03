@@ -1,3 +1,4 @@
+from scenes.gamescene import GameScene
 from scenes.scene import Scene
 
 
@@ -48,7 +49,7 @@ class MainMenu(Scene):
         self.play_ai_btn = Button(
             self,
             (100, 10),
-            (57 * 64 / 21, 64),
+            (57 * 64 // 21, 64),
             self.game.assets.textures.buttons.play.ai,
             self.game.assets.textures.buttons.play.hover.ai,
             self.game.assets.textures.buttons.play.on_pressed.ai,
@@ -56,14 +57,27 @@ class MainMenu(Scene):
         )
         self.play_player_btn = Button(
             self,
-            (100, 80),
-            (57 * 64 / 21, 64),
+            (100, 10 + 70),
+            (57 * 64 // 21, 64),
             self.game.assets.textures.buttons.play.player,
             self.game.assets.textures.buttons.play.hover.player,
             self.game.assets.textures.buttons.play.on_pressed.player,
             self.on_play_player,
         )
-        self.play_buttons: list[Button] = [self.play_ai_btn, self.play_player_btn]
+        self.analyse_btn = Button(
+            self,
+            (100, 10 + 2 * 70),
+            (57 * 64 // 21, 64),
+            self.game.assets.textures.buttons.play.analyse,
+            self.game.assets.textures.buttons.play.hover.analyse,
+            self.game.assets.textures.buttons.play.on_pressed.analyse,
+            self.on_analyse,
+        )
+        self.play_buttons: list[Button] = [
+            self.play_ai_btn,
+            self.play_player_btn,
+            self.analyse_btn,
+        ]
         self.actors.extend(self.play_buttons)
         for btn in self.play_buttons:
             btn.hide()
@@ -77,7 +91,7 @@ class MainMenu(Scene):
                 Button(
                     self,
                     (300, 10 + i * 70),
-                    (57 * 64 / 21, 64),
+                    (57 * 64 // 21, 64),
                     self.game.assets.textures.buttons.play.lvl[i],
                     self.game.assets.textures.buttons.play.hover.lvl[i],
                     self.game.assets.textures.buttons.play.on_pressed.lvl[i],
@@ -109,11 +123,14 @@ class MainMenu(Scene):
         for btn in self.play_ai_btns:
             btn.show()
 
+    def on_analyse(self, event: ButtonClickEvent) -> None:
+        self.game.scene = GameScene(self.game)
+
     def on_play_player(self, event: ButtonClickEvent) -> None:
         self.hide_ai_btns()
 
     def on_play_ai(self, event: ButtonClickEvent, lvl: int) -> None:
-        ...
+        self.game.scene = GameScene(self.game)
 
     def hide_play_btns(self):
         for btn in self.play_buttons:
@@ -126,7 +143,7 @@ class MainMenu(Scene):
             btn.hide()
 
     def hide_player_btns(self):
-        ...
+        pass
 
     def dispose(self):
         return super().dispose()

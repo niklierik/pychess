@@ -1,6 +1,6 @@
 from actors.actor import Actor
 import pygame
-from typing import Callable
+from typing import Callable, Union
 from scenes.scene import Scene
 
 
@@ -45,6 +45,8 @@ class Button(Actor):
 
     @property
     def render_bounds(self):
+        if self.game is None:
+            return pygame.Rect(0, 0, 0, 0)
         return self.game.viewport.get_rect(self.bounds)
 
     @property
@@ -59,7 +61,7 @@ class Button(Actor):
         super().render(screen)
         screen.blit(self.active_texture, self.render_bounds.topleft)
 
-    def on_window_resize(self, event: pygame.event.Event):
+    def on_window_resize(self, event: Union[None, pygame.event.Event]):
         self.texture = pygame.transform.scale(
             self.original_texture,
             pygame.Vector2(self.render_bounds.size[0], self.render_bounds.size[1]),
@@ -76,7 +78,7 @@ class Button(Actor):
         # print(self.active_texture)
         return super().on_window_resize(event)
 
-    def update(self):
+    def update(self, delta: float):
         mousepos = pygame.mouse.get_pos()
         if not self.inside and self.render_bounds.collidepoint(mousepos):
             self.on_mouse_enters(mousepos)
@@ -84,31 +86,31 @@ class Button(Actor):
         if self.inside and not self.render_bounds.collidepoint(mousepos):
             self.on_mouse_exits(mousepos)
             self.inside = False
-        super().update()
+        super().update(delta)
 
     def on_mouse_enters(self, pos: tuple[int, int]):
         # self.active_texture = self.hover_texture
-        ...
+        pass
 
     def on_mouse_exits(self, pos: tuple[int, int]):
         # self.active_texture = self.texture
-        ...
+        pass
 
     def on_mouse_button_down(
-        self, event: pygame.event.Event, pos: tuple[int, int], button: int
+        self, _event: pygame.event.Event, pos: tuple[int, int], button: int
     ):
         if not self.render_bounds.collidepoint(pos[0], pos[1]):
             return
-        event = ButtonClickEvent(event.pos, False, event.button)
+        event = ButtonClickEvent(_event.pos, False, _event.button)
         # self.active_texture = self.on_pressed_texture
         self.pressed = True
         if not self.only_on_up and self.action is not None:
             self.action(event)
 
     def on_mouse_button_up(
-        self, event: pygame.event.Event, pos: tuple[int, int], button: int
+        self, _event: pygame.event.Event, pos: tuple[int, int], button: int
     ):
-        event = ButtonClickEvent(event.pos, True, event.button)
+        event = ButtonClickEvent(_event.pos, True, _event.button)
         # self.active_texture = self.hover_texture
         self.pressed = False
         if self.action is not None and self.render_bounds.collidepoint(pos[0], pos[1]):

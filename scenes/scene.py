@@ -11,6 +11,9 @@ class Scene:
         self._actors: list[Actor] = []
 
     def init(self):
+        """
+        Runs when game's current scene's changes to this
+        """
         for actor in self.actors:
             actor.init()
 
@@ -22,9 +25,12 @@ class Scene:
     def actors(self):
         return self._actors
 
-    def loop(self):
+    def remove_actors(self, actors: list):
+        self._actors = list(filter(lambda actor: actor not in actors, self.actors))
+
+    def loop(self, delta: float):
         for actor in self.actors:
-            actor.update()
+            actor.update(delta)
 
     def render(self, screen: pygame.surface.Surface):
         for actor in self.actors:
@@ -52,3 +58,4 @@ class Scene:
     def dispose(self):
         for actor in self.actors:
             actor.dispose()
+        self.actors.clear()
