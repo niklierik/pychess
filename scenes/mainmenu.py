@@ -130,7 +130,11 @@ class MainMenu(Scene):
     def on_analyse(self, event: ButtonClickEvent) -> None:
         from game.controllers import PlayerController
 
-        self.game.scene = GameScene(self.game, PlayerController(), PlayerController())
+        self.game.scene = GameScene(
+            self.game,
+            PlayerController(PieceColor.WHITE),
+            PlayerController(PieceColor.BLACK),
+        )
 
     def on_play_player(self, event: ButtonClickEvent) -> None:
         self.hide_ai_btns()
@@ -140,10 +144,10 @@ class MainMenu(Scene):
         lvl: int,
         playersColor: PieceColor = PieceColor.WHITE,
     ) -> None:
-        from game.controllers import PlayerController, ai_controller_of
+        from game.controllers import PlayerController, AIController
 
-        player = PlayerController()
-        ai = ai_controller_of(lvl)
+        player = PlayerController(playersColor)
+        ai = AIController(playersColor.opposite(), lvl)
         self.game.scene = GameScene(
             self.game,
             player if playersColor == PieceColor.WHITE else ai,

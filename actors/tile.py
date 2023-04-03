@@ -162,7 +162,7 @@ class Tile(Actor):
 
         if button == 1:  # Left Click
             if self.selected:
-                self.selected = False
+                self.board.clear_selection()
                 return
             if self.can_move_there and self.board.selected is not None:
                 promote = ""

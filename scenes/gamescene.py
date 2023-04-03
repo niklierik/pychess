@@ -76,7 +76,16 @@ class GameScene(Scene):
         self.actors.append(self.board)
         self.actors.append(self.change_perspective_btn)
         self.actors.extend(self.promotion_btns)
-        return super().init()
+        for c in self.controllers:
+            c.init(self)
+        super().init()
+
+    def loop(self, delta: float):
+        super().loop(delta)
+        if self.board.turn_of == PieceColor.WHITE:
+            self.white_player.update(self)
+        else:
+            self.black_player.update(self)
 
     @property
     def controllers(self):
@@ -93,3 +102,8 @@ class GameScene(Scene):
         self.board.selected = None
         for tile in self.board.tiles:
             tile.can_move_there = False
+
+    def dispose(self):
+        super().dispose()
+        for c in self.controllers:
+            c.dispose()

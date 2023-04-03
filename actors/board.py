@@ -231,6 +231,12 @@ class Board(Actor):
         if self.selected is not None:
             self.selected.render(screen)
 
+    def game_over(self):
+        from scenes.mainmenu import MainMenu
+
+        assert self.game is not None
+        self.game.scene = MainMenu(self.game)
+
     def get_moves_from(self, tile_from: Tile):
         moves: list[chess.Move] = []
         for move in self.chess_board.legal_moves:
@@ -240,20 +246,13 @@ class Board(Actor):
                 moves.append(move)
         return moves
 
-    def make_move(
-        self,
-        _from: typing.Union[None, Tile],
-        to: typing.Union[None, Tile],
-        promoteTo: str = "",
-    ):
+    def make_move_uci(self, uci: str):
         from game.pieces import Pawn
 
-        if _from is None or to is None:
-            return
-        # moving
-        uci = f"{_from.__str__()}{to.__str__()}{promoteTo}"
         try:
             move: chess.Move = chess.Move.from_uci(uci)
+            _from, to = self.find_tiles(uci[:4])
+            assert _from is not None and to is not None
             # if len(promoteTo) > 0:
             #    move.promotion = promotion[promoteTo]
             if not self.chess_board.is_legal(move):
@@ -323,6 +322,19 @@ class Board(Actor):
             print(e)
         self.turn_of = self.turn_of.opposite()
         return
+
+    def make_move(
+        self,
+        _from: typing.Union[None, Tile],
+        to: typing.Union[None, Tile],
+        promoteTo: str = "",
+    ):
+
+        if _from is None or to is None:
+            return
+        # moving
+        uci = f"{_from.__str__()}{to.__str__()}{promoteTo}"
+        self.make_move_uci(uci)
 
     def update(self, delta):
         for tile in self.tiles:
