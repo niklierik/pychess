@@ -138,12 +138,25 @@ class Tile(Actor):
     def scene(self) -> scenes.gamescene.GameScene:
         return super().scene  # type: ignore
 
+    def promotion(
+        self,
+        _from: typing.Union[None, "Tile"],  # typing bs...
+        to: "Tile",
+        promote_to: str,
+    ):
+        assert _from is not None  # typing bs...
+        self.board.make_move(_from, to, promote_to)
+        for btn in self.scene.promotion_btns:
+            btn.hide()
+        pass
+
     def on_mouse_button_up(
         self, event: pygame.event.Event, pos: tuple[int, int], button: int
     ):
         from game.color import PieceColor
         from game.controllers import PlayerController
         from game.pieces import Pawn
+        from scenes.gamescene import GameScene
 
         #
 
@@ -153,10 +166,26 @@ class Tile(Actor):
                 return
             if self.can_move_there and self.board.selected is not None:
                 promote = ""
-                if isinstance(self.board.selected.piece, Pawn) and (
-                    self.y == 0 or self.y == 7
+                if (
+                    isinstance(self.board.selected.piece, Pawn)
+                    and (self.y == 0 or self.y == 7)
+                    and not self.board.selected.piece.promoted
                 ):
-                    promote = "q"
+                    self.scene.promote_to_queen_btn.action = lambda _: self.promotion(
+                        self.board.selected, self, "q"
+                    )
+                    self.scene.promote_to_bishop_btn.action = lambda _: self.promotion(
+                        self.board.selected, self, "b"
+                    )
+                    self.scene.promote_to_knight_btn.action = lambda _: self.promotion(
+                        self.board.selected, self, "k"
+                    )
+                    self.scene.promote_to_rook_btn.action = lambda _: self.promotion(
+                        self.board.selected, self, "r"
+                    )
+                    for btn in self.scene.promotion_btns:
+                        btn.show()
+                    return
                 self.board.make_move(self.board.selected, self, promote)
                 return
             self.board.clear_selection()

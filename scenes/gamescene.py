@@ -7,16 +7,13 @@ class GameScene(Scene):
     def __init__(self, game, white_controller, black_controller) -> None:
         from game.controllers import Controller
         from actors.board import Board
+        from actors.button import Button
 
         super().__init__(game)
+        icons = self.game.assets.textures.buttons.icons
         self.board = Board(self)
         self.white_player: Controller = white_controller
         self.black_player: Controller = black_controller
-
-    def init(self):
-        from actors.button import Button
-
-        icons = self.game.assets.textures.buttons.icons
         self.change_perspective_btn = Button(
             self,
             (self.board.bounds.right + 10, self.board.bounds.top),
@@ -65,6 +62,9 @@ class GameScene(Scene):
             icons.on_pressed.bishop,
             lambda x: None,
         )
+
+    def init(self):
+
         self.promotion_btns = [
             self.promote_to_queen_btn,
             self.promote_to_rook_btn,

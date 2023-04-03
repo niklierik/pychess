@@ -74,6 +74,7 @@ class Pawn(Piece):
         super().__init__(board, c)
         self.pos = (file, 1 if c != board.perspective else 6)
         self.direction = 1 if c != board.perspective else -1
+        self.promoted = False
         if self.game is not None and self.assets is not None:
             theme = self.assets.textures.pieces.regular
             self.original_texture = (

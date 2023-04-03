@@ -246,6 +246,8 @@ class Board(Actor):
         to: typing.Union[None, Tile],
         promoteTo: str = "",
     ):
+        from game.pieces import Pawn
+
         if _from is None or to is None:
             return
         # moving
@@ -285,6 +287,8 @@ class Board(Actor):
                         case chess.QUEEN:
                             to.piece.original_texture = pieces.queen
                     to.piece.on_resize()
+                    assert isinstance(to.piece, Pawn)
+                    to.piece.promoted = True
 
             print(f"{uci} | {self.chess_board.san(move)}")
             _from.selected = False
