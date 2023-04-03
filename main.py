@@ -3,9 +3,9 @@ import os.path as path
 import platform
 import shutil
 import assets.asset
+import asyncio
 
 import pygame
-from stockfish import Stockfish
 
 
 class Game:
@@ -56,6 +56,16 @@ class Game:
         self.clock = pygame.time.Clock()
         self.running = True
         self.scene = MainMenu(self)
+
+    async def start_engine(self):
+        import chess.engine
+
+        self.transport, self.engine = await chess.engine.popen_uci("./stockfish")
+
+    async def quit_engine(self):
+        if self.engine is None:
+            return
+        await self.engine.quit()
 
     def events(self):
         """

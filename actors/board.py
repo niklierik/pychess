@@ -246,15 +246,16 @@ class Board(Actor):
         to: typing.Union[None, Tile],
         promoteTo: str = "",
     ):
-        import math
-
         if _from is None or to is None:
             return
         # moving
         uci = f"{_from.__str__()}{to.__str__()}{promoteTo}"
         try:
             move: chess.Move = chess.Move.from_uci(uci)
-
+            # if len(promoteTo) > 0:
+            #    move.promotion = promotion[promoteTo]
+            if not self.chess_board.is_legal(move):
+                return
             ### Handle captures
             if self.chess_board.is_capture(move):
                 if to.piece is not None:  # may be false if en passant
@@ -266,12 +267,25 @@ class Board(Actor):
                     assert tile.piece is not None
                     tile.piece.tile = None
 
-            if len(promoteTo) > 0:
-                move.promotion = promotion[promoteTo]
-            if not self.chess_board.is_legal(move):
-                return
             if _from.piece is not None:
                 _from.piece.tile = to
+                if move.promotion is not None:
+                    assert to.piece is not None
+                    assert self.game is not None
+                    color = to.piece.color
+                    theme = self.game.assets.textures.pieces.regular
+                    pieces = theme.white if color == Color.WHITE else theme.black
+                    match move.promotion:
+                        case chess.KNIGHT:
+                            to.piece.original_texture = pieces.knight
+                        case chess.BISHOP:
+                            to.piece.original_texture = pieces.bishop
+                        case chess.ROOK:
+                            to.piece.original_texture = pieces.rook
+                        case chess.QUEEN:
+                            to.piece.original_texture = pieces.queen
+                    to.piece.on_resize()
+
             print(f"{uci} | {self.chess_board.san(move)}")
             _from.selected = False
             to.selected = False

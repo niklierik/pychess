@@ -1,5 +1,7 @@
 from scenes.gamescene import GameScene
 from scenes.scene import Scene
+from game.color import PieceColor
+import random
 
 
 class MainMenu(Scene):
@@ -95,7 +97,9 @@ class MainMenu(Scene):
                     self.game.assets.textures.buttons.play.lvl[i],
                     self.game.assets.textures.buttons.play.hover.lvl[i],
                     self.game.assets.textures.buttons.play.on_pressed.lvl[i],
-                    lambda event: self.on_play_ai(event, i + 1),
+                    lambda event: self.on_play_ai(
+                        i + 1, PieceColor(random.randint(0, 1))
+                    ),
                 )
             )
         self.actors.extend(self.play_ai_btns)
@@ -124,13 +128,27 @@ class MainMenu(Scene):
             btn.show()
 
     def on_analyse(self, event: ButtonClickEvent) -> None:
-        self.game.scene = GameScene(self.game)
+        from game.controllers import PlayerController
+
+        self.game.scene = GameScene(self.game, PlayerController(), PlayerController())
 
     def on_play_player(self, event: ButtonClickEvent) -> None:
         self.hide_ai_btns()
 
-    def on_play_ai(self, event: ButtonClickEvent, lvl: int) -> None:
-        self.game.scene = GameScene(self.game)
+    def on_play_ai(
+        self,
+        lvl: int,
+        playersColor: PieceColor = PieceColor.WHITE,
+    ) -> None:
+        from game.controllers import PlayerController, ai_controller_of
+
+        player = PlayerController()
+        ai = ai_controller_of(lvl)
+        self.game.scene = GameScene(
+            self.game,
+            player if playersColor == PieceColor.WHITE else ai,
+            player if playersColor == PieceColor.BLACK else ai,
+        )
 
     def hide_play_btns(self):
         for btn in self.play_buttons:

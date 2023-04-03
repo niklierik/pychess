@@ -143,6 +143,7 @@ class Tile(Actor):
     ):
         from game.color import PieceColor
         from game.controllers import PlayerController
+        from game.pieces import Pawn
 
         #
 
@@ -151,7 +152,12 @@ class Tile(Actor):
                 self.selected = False
                 return
             if self.can_move_there and self.board.selected is not None:
-                self.board.make_move(self.board.selected, self)
+                promote = ""
+                if isinstance(self.board.selected.piece, Pawn) and (
+                    self.y == 0 or self.y == 7
+                ):
+                    promote = "q"
+                self.board.make_move(self.board.selected, self, promote)
                 return
             self.board.clear_selection()
             if self.piece is None:
@@ -167,7 +173,7 @@ class Tile(Actor):
                 return
             # print(self.__str__() + " selected")
             for move in self.legal_moves:
-                _, to = self.board.find_tiles(move.uci())
+                to = self.board.find_tile(move.uci()[2:4])
                 if to is None:
                     continue
                 to.can_move_there = True
