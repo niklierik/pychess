@@ -62,6 +62,7 @@ class AIController(Controller):
         self.update_thread = threading.Thread(target=self.update_async, name="update")
         self.commonai: typing.Union[None, dict[str, typing.Any]] = None
         self.depth = 20
+        self.time = 0.4
 
     def load(self):
         import os.path as path
@@ -81,11 +82,17 @@ class AIController(Controller):
                 if key == "Depth":
                     self.depth = value
                     continue
+                if key == "Time":
+                    self.time = value
+                    continue
                 obj[key] = value
         if lvlai is not None:
             for (key, value) in lvlai.items():
                 if key == "Depth":
                     self.depth = value
+                    continue
+                if key == "Time":
+                    self.time = value
                     continue
                 obj[key] = value
         return obj
@@ -123,7 +130,7 @@ class AIController(Controller):
                     # print("AI thinking")
                     result = self.engine.play(
                         self.scene.board.chess_board,
-                        chess.engine.Limit(time=0.5, depth=20),
+                        chess.engine.Limit(time=self.time, depth=20),
                     )
                     # print(f"Result: {result}")
                     if result.move is not None:

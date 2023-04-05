@@ -5,7 +5,7 @@ from game.color import PieceColor
 
 class GameScene(Scene):
     def __init__(self, game, white_controller, black_controller) -> None:
-        from game.controllers import Controller
+        from game.controllers import Controller, PlayerController
         from actors.board import Board
         from actors.button import Button
 
@@ -14,6 +14,10 @@ class GameScene(Scene):
         self.board = Board(self)
         self.white_player: Controller = white_controller
         self.black_player: Controller = black_controller
+        if not isinstance(white_controller, PlayerController) and isinstance(
+            black_controller, PlayerController
+        ):
+            self.board.perspective = PieceColor.BLACK
         self.change_perspective_btn = Button(
             self,
             (self.board.bounds.right + 80, self.board.bounds.top),

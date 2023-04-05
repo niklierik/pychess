@@ -4,5 +4,5 @@
   "Hash": 16,
   "Move Overhead": 10,
   "Slow Mover": 100,
-  "UCI_LimitStrength": "true"
+  "UCI_LimitStrength": true
 }

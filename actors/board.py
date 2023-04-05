@@ -235,6 +235,7 @@ class Board(Actor):
         from scenes.mainmenu import MainMenu
 
         assert self.game is not None
+        self.game.scene.dispose()
         self.game.scene = MainMenu(self.game)
 
     def get_moves_from(self, tile_from: Tile):
