@@ -57,16 +57,6 @@ class Game:
         self.running = True
         self.scene = MainMenu(self)
 
-    async def start_engine(self):
-        import chess.engine
-
-        self.transport, self.engine = await chess.engine.popen_uci("./stockfish")
-
-    async def quit_engine(self):
-        if self.engine is None:
-            return
-        await self.engine.quit()
-
     def events(self):
         """
         Runs PyGame events
@@ -162,14 +152,12 @@ def main():
     """
     game = Game()
     game.init()
-    getTicksLastFrame = 0
     delta = 0
     while game.running:
         game.events()
         game.loop(delta / 1000.0)
         game.render()
         delta = game.clock.tick(60)
-        # print("FPS: " + game.clock.get_fps().__str__())
     game.clean()
     exit(0)
 

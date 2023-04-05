@@ -80,7 +80,7 @@ class Tile(Actor):
                 screen,
                 (
                     0,
-                    math.sin(self.piece_anim_offset) * ANIM_HEIGHT
+                    math.sin(self.piece_anim_offset) * float(ANIM_HEIGHT)
                     - ANIM_HEIGHT,  # animation
                 ),
             )

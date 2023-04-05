@@ -6,7 +6,7 @@ import random
 
 class MainMenu(Scene):
     import main
-    from actors.button import ButtonClickEvent
+    from actors.button import ClickEvent
 
     def __init__(self, game: main.Game):
         super().__init__(game)
@@ -88,20 +88,19 @@ class MainMenu(Scene):
         from actors.button import Button
 
         self.play_ai_btns: list[Button] = []
-        for i in range(0, 5):
-            self.play_ai_btns.append(
-                Button(
-                    self,
-                    (300, 10 + i * 70),
-                    (57 * 64 // 21, 64),
-                    self.game.assets.textures.buttons.play.lvl[i],
-                    self.game.assets.textures.buttons.play.hover.lvl[i],
-                    self.game.assets.textures.buttons.play.on_pressed.lvl[i],
-                    lambda event: self.on_play_ai(
-                        i + 1, PieceColor(random.randint(0, 1))
-                    ),
-                )
+        for lvl in range(0, 5):
+            btn = Button(
+                self,
+                (300, 10 + lvl * 70),
+                (57 * 64 // 21, 64),
+                self.game.assets.textures.buttons.play.lvl[lvl],
+                self.game.assets.textures.buttons.play.hover.lvl[lvl],
+                self.game.assets.textures.buttons.play.on_pressed.lvl[lvl],
+                self.on_play_ai,
             )
+            btn.custom_vars["lvl"] = lvl + 1
+            btn.custom_vars["color"] = PieceColor(random.randint(0, 1))
+            self.play_ai_btns.append(btn)
         self.actors.extend(self.play_ai_btns)
         for btn in self.play_ai_btns:
             btn.hide()
@@ -112,22 +111,22 @@ class MainMenu(Scene):
         self.init_play_ai_btns()
         super().init()
 
-    def on_play_btn(self, event: ButtonClickEvent) -> None:
+    def on_play_btn(self, event: ClickEvent) -> None:
         for btn in self.play_buttons:
             btn.show()
 
-    def on_settings_btn(self, event: ButtonClickEvent) -> None:
+    def on_settings_btn(self, event: ClickEvent) -> None:
         self.hide_play_btns()
 
-    def on_exit_btn(self, event: ButtonClickEvent) -> None:
+    def on_exit_btn(self, event: ClickEvent) -> None:
         self.game.quit()
 
-    def on_show_ai_lvls(self, event: ButtonClickEvent) -> None:
+    def on_show_ai_lvls(self, event: ClickEvent) -> None:
         self.hide_player_btns()
         for btn in self.play_ai_btns:
             btn.show()
 
-    def on_analyse(self, event: ButtonClickEvent) -> None:
+    def on_analyse(self, event: ClickEvent) -> None:
         from game.controllers import PlayerController
 
         self.game.scene = GameScene(
@@ -136,16 +135,21 @@ class MainMenu(Scene):
             PlayerController(PieceColor.BLACK),
         )
 
-    def on_play_player(self, event: ButtonClickEvent) -> None:
+    def on_play_player(self, event: ClickEvent) -> None:
         self.hide_ai_btns()
 
     def on_play_ai(
         self,
-        lvl: int,
-        playersColor: PieceColor = PieceColor.WHITE,
+        event: ClickEvent,
     ) -> None:
         from game.controllers import PlayerController, AIController
+        from actors.button import Button
 
+        btn = event.actor
+        if not isinstance(btn, Button):
+            return
+        playersColor = btn.custom_vars["color"]
+        lvl = btn.custom_vars["lvl"]
         player = PlayerController(playersColor)
         ai = AIController(playersColor.opposite(), lvl)
         self.game.scene = GameScene(

@@ -1,6 +1,8 @@
 import scenes.gamescene
 import game.color
 import threading
+import json
+import typing
 
 
 class Controller:
@@ -52,16 +54,52 @@ ct = CancellationToken()
 class AIController(Controller):
     def __init__(self, color: game.color.PieceColor, lvl: int):
         super().__init__(color)
+        global ct
+        ct = CancellationToken()
         self._lvl = lvl
         self.run = False
         self.scene: scenes.gamescene.GameScene = None  # type: ignore
         self.update_thread = threading.Thread(target=self.update_async, name="update")
+        self.commonai: typing.Union[None, dict[str, typing.Any]] = None
+        self.depth = 20
+
+    def load(self):
+        import os.path as path
+
+        """
+        Load common.json settings then lvl{lvl}.json settings, and combines them (lvl settings are stronger, and will override common settings) into one dictionary.
+        """
+        commonai: typing.Union[None, dict[str, typing.Any]] = None
+        lvlai: typing.Union[None, dict[str, typing.Any]] = None
+        with open(path.join("ai", "common.json")) as common_f:
+            commonai = json.load(common_f)
+        with open(path.join("ai", f"lvl{self.lvl}.json")) as lvl_f:
+            lvlai = json.load(lvl_f)
+        obj = {}
+        if commonai is not None:
+            for (key, value) in commonai.items():
+                if key == "Depth":
+                    self.depth = value
+                    continue
+                obj[key] = value
+        if lvlai is not None:
+            for (key, value) in lvlai.items():
+                if key == "Depth":
+                    self.depth = value
+                    continue
+                obj[key] = value
+        return obj
 
     def init(self, scene):
         import chess.engine
 
+        self.settings = self.load()
+        print(self.settings)
+        if self.settings is None:
+            return
         self.scene = scene
         self.engine = chess.engine.SimpleEngine.popen_uci("./stockfish")
+        self.engine.configure(self.settings)
         self.update_thread.start()
 
     @property

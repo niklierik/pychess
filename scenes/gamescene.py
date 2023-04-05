@@ -16,16 +16,25 @@ class GameScene(Scene):
         self.black_player: Controller = black_controller
         self.change_perspective_btn = Button(
             self,
-            (self.board.bounds.right + 10, self.board.bounds.top),
+            (self.board.bounds.right + 80, self.board.bounds.top),
             (64, 64),
             icons.refresh,
             icons.hover.refresh,
             icons.on_pressed.refresh,
             self.on_change_perspective,
         )
+        self.to_main_menu_btn = Button(
+            self,
+            (self.board.bounds.right + 80, self.board.bounds.top + 70),
+            (64, 64),
+            icons.close,
+            icons.hover.close,
+            icons.on_pressed.close,
+            self.to_main_menu,
+        )
         self.promote_to_queen_btn = Button(
             self,
-            (self.board.bounds.right + 10, self.board.bounds.top + 70),
+            (self.board.bounds.right + 10, self.board.bounds.top),
             (64, 64),
             icons.queen,
             icons.hover.queen,
@@ -35,7 +44,7 @@ class GameScene(Scene):
 
         self.promote_to_rook_btn = Button(
             self,
-            (self.board.bounds.right + 10, self.board.bounds.top + 2 * 70),
+            (self.board.bounds.right + 10, self.board.bounds.top + 1 * 70),
             (64, 64),
             icons.rook,
             icons.hover.rook,
@@ -45,7 +54,7 @@ class GameScene(Scene):
 
         self.promote_to_knight_btn = Button(
             self,
-            (self.board.bounds.right + 10, self.board.bounds.top + 3 * 70),
+            (self.board.bounds.right + 10, self.board.bounds.top + 2 * 70),
             (64, 64),
             icons.knight,
             icons.hover.knight,
@@ -55,7 +64,7 @@ class GameScene(Scene):
 
         self.promote_to_bishop_btn = Button(
             self,
-            (self.board.bounds.right + 10, self.board.bounds.top + 4 * 70),
+            (self.board.bounds.right + 10, self.board.bounds.top + 3 * 70),
             (64, 64),
             icons.bishop,
             icons.hover.bishop,
@@ -75,6 +84,7 @@ class GameScene(Scene):
             btn.hide()
         self.actors.append(self.board)
         self.actors.append(self.change_perspective_btn)
+        self.actors.append(self.to_main_menu_btn)
         self.actors.extend(self.promotion_btns)
         for c in self.controllers:
             c.init(self)
@@ -102,6 +112,11 @@ class GameScene(Scene):
         self.board.selected = None
         for tile in self.board.tiles:
             tile.can_move_there = False
+
+    def to_main_menu(self, _):
+        from scenes.mainmenu import MainMenu
+
+        self.game.scene = MainMenu(self.game)
 
     def dispose(self):
         super().dispose()
