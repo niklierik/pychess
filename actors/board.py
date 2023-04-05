@@ -7,7 +7,7 @@ import game.color
 import game.side
 import chess
 
-Color = game.color.PieceColor
+PieceColor = game.color.PieceColor
 Side = game.side.Side
 
 
@@ -24,14 +24,14 @@ promotion = {
 
 
 class Board(Actor):
-    def __init__(self, scene, perspective=Color.WHITE) -> None:
+    def __init__(self, scene, perspective=PieceColor.WHITE) -> None:
         super().__init__(scene)
         self.chess_board = chess.Board()
         self.tiles: list[Tile] = []
         self._perspective = perspective
         self.chars: list[TextureActor] = []
         self.offset = (50 + TILESIZE, (1080 - TILESIZE * HEIGHT) // 2)
-        self.turn_of = Color.WHITE
+        self.turn_of = PieceColor.WHITE
         if self.game is not None:
             self.rank_textures = self.game.assets.textures.chars.ranks
             self.file_textures = self.game.assets.textures.chars.files
@@ -48,7 +48,7 @@ class Board(Actor):
         return self._perspective
 
     @perspective.setter
-    def perspective(self, perspective: Color):
+    def perspective(self, perspective: PieceColor):
         from game.pieces import Piece
 
         if perspective == self._perspective:
@@ -162,7 +162,7 @@ class Board(Actor):
         import game.pieces
 
         pieces: list[game.pieces.Piece] = []
-        for color in [Color.WHITE, Color.BLACK]:
+        for color in [PieceColor.WHITE, PieceColor.BLACK]:
             for file in range(0, WIDTH):
                 pieces.append(game.pieces.Pawn(self, color, file))
             for side in [Side.QUEEN, Side.KING]:
@@ -193,8 +193,8 @@ class Board(Actor):
         file = files.index(uci[0])
         rank = int(uci[1])
         return self.index(
-            file if self.perspective == Color.WHITE else 8 - file - 1,
-            rank - 1 if self.perspective == Color.BLACK else 8 - rank,
+            file if self.perspective == PieceColor.WHITE else 8 - file - 1,
+            rank - 1 if self.perspective == PieceColor.BLACK else 8 - rank,
         )
 
     def clear_selection(self):
@@ -275,7 +275,7 @@ class Board(Actor):
                     assert self.game is not None
                     color = to.piece.color
                     theme = self.game.assets.textures.pieces.regular
-                    pieces = theme.white if color == Color.WHITE else theme.black
+                    pieces = theme.white if color == PieceColor.WHITE else theme.black
                     match move.promotion:
                         case chess.KNIGHT:
                             to.piece.original_texture = pieces.knight
@@ -299,11 +299,11 @@ class Board(Actor):
             y = 7 if self.perspective == to.piece.color else 0
             from_x = to_x = None
             if self.chess_board.is_kingside_castling(move):
-                from_x = 7 if self.perspective == Color.WHITE else 0
-                to_x = 5 if self.perspective == Color.WHITE else 2
+                from_x = 7 if self.perspective == PieceColor.WHITE else 0
+                to_x = 5 if self.perspective == PieceColor.WHITE else 2
             if self.chess_board.is_queenside_castling(move):
-                from_x = 0 if self.perspective == Color.WHITE else 7
-                to_x = 3 if self.perspective == Color.WHITE else 4
+                from_x = 0 if self.perspective == PieceColor.WHITE else 7
+                to_x = 3 if self.perspective == PieceColor.WHITE else 4
             if from_x is not None and to_x is not None:
                 _from = self.tile(self.index(from_x, y))
                 to = self.tile(self.index(to_x, y))

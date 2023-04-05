@@ -171,6 +171,7 @@ def main():
         delta = game.clock.tick(60)
         # print("FPS: " + game.clock.get_fps().__str__())
     game.clean()
+    exit(0)
 
 
 if __name__ == "__main__":
