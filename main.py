@@ -3,7 +3,6 @@ import os.path as path
 import platform
 import shutil
 import assets.asset
-import asyncio
 
 import pygame
 

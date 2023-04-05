@@ -12,6 +12,7 @@ class GameScene(Scene):
         super().__init__(game)
         icons = self.game.assets.textures.buttons.icons
         self.board = Board(self)
+
         self.white_player: Controller = white_controller
         self.black_player: Controller = black_controller
         if not isinstance(white_controller, PlayerController) and isinstance(

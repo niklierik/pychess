@@ -149,8 +149,8 @@ class MainMenu(Scene):
 
         self.game.scene = GameScene(
             self.game,
-            PlayerController(PieceColor.WHITE),
-            PlayerController(PieceColor.BLACK),
+            PlayerController(PieceColor.WHITE, "White"),
+            PlayerController(PieceColor.BLACK, "Black"),
         )
 
     def on_play_player(self, _: ClickEvent) -> None:
@@ -213,7 +213,7 @@ class MainMenu(Scene):
         playersColor = btn.custom_vars["color"]
         lvl = btn.custom_vars["lvl"]
         print(f"Playing AI {lvl}:")
-        player = PlayerController(playersColor)
+        player = PlayerController(playersColor, "Player")
         ai = AIController(playersColor.opposite(), lvl)
         self.game.scene = GameScene(
             self.game,
