@@ -1,0 +1,8 @@
+{
+  "Debug Log File": "",
+  "Threads": 1,
+  "Hash": 16,
+  "Move Overhead": 10,
+  "Slow Mover": 100,
+  "UCI_LimitStrength": true
+}

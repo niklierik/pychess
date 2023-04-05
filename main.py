@@ -5,7 +5,6 @@ import shutil
 import assets.asset
 
 import pygame
-from stockfish import Stockfish
 
 
 class Game:
@@ -152,15 +151,14 @@ def main():
     """
     game = Game()
     game.init()
-    getTicksLastFrame = 0
     delta = 0
     while game.running:
         game.events()
         game.loop(delta / 1000.0)
         game.render()
         delta = game.clock.tick(60)
-        # print("FPS: " + game.clock.get_fps().__str__())
     game.clean()
+    exit(0)
 
 
 if __name__ == "__main__":

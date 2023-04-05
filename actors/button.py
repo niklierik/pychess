@@ -4,11 +4,12 @@ from typing import Callable, Union
 from scenes.scene import Scene
 
 
-class ButtonClickEvent:
-    def __init__(self, pos: tuple[int, int], up: bool, button: int):
+class ClickEvent:
+    def __init__(self, pos: tuple[int, int], up: bool, button: int, actor: Actor):
         self.pos = pos
         self.up = up
         self.button = button
+        self.actor = actor
 
 
 class Button(Actor):
@@ -20,7 +21,7 @@ class Button(Actor):
         texture: pygame.Surface,
         hover_texture: pygame.Surface,
         on_pressed_texture: pygame.Surface,
-        action: Callable[[ButtonClickEvent], None],
+        action: Callable[[ClickEvent], None],
         only_on_up: bool = True,
     ) -> None:
         super().__init__(scene)
@@ -31,6 +32,7 @@ class Button(Actor):
         self.size = size
         self.only_on_up = only_on_up
         self.original_texture = self.texture = texture.copy()
+        self.custom_vars = {}
         self.original_hover_texture = self.hover_texture = hover_texture.copy()
         self.original_on_pressed_texture = (
             self.on_pressed_texture
@@ -101,7 +103,7 @@ class Button(Actor):
     ):
         if not self.render_bounds.collidepoint(pos[0], pos[1]):
             return
-        event = ButtonClickEvent(_event.pos, False, _event.button)
+        event = ClickEvent(_event.pos, False, _event.button, self)
         # self.active_texture = self.on_pressed_texture
         self.pressed = True
         if not self.only_on_up and self.action is not None:
@@ -110,7 +112,7 @@ class Button(Actor):
     def on_mouse_button_up(
         self, _event: pygame.event.Event, pos: tuple[int, int], button: int
     ):
-        event = ButtonClickEvent(_event.pos, True, _event.button)
+        event = ClickEvent(_event.pos, True, _event.button, self)
         # self.active_texture = self.hover_texture
         self.pressed = False
         if self.action is not None and self.render_bounds.collidepoint(pos[0], pos[1]):

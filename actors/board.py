@@ -7,7 +7,7 @@ import game.color
 import game.side
 import chess
 
-Color = game.color.PieceColor
+PieceColor = game.color.PieceColor
 Side = game.side.Side
 
 
@@ -24,14 +24,14 @@ promotion = {
 
 
 class Board(Actor):
-    def __init__(self, scene, perspective=Color.WHITE) -> None:
+    def __init__(self, scene, perspective=PieceColor.WHITE) -> None:
         super().__init__(scene)
         self.chess_board = chess.Board()
         self.tiles: list[Tile] = []
         self._perspective = perspective
         self.chars: list[TextureActor] = []
         self.offset = (50 + TILESIZE, (1080 - TILESIZE * HEIGHT) // 2)
-        self.turn_of = Color.WHITE
+        self.turn_of = PieceColor.WHITE
         if self.game is not None:
             self.rank_textures = self.game.assets.textures.chars.ranks
             self.file_textures = self.game.assets.textures.chars.files
@@ -48,7 +48,7 @@ class Board(Actor):
         return self._perspective
 
     @perspective.setter
-    def perspective(self, perspective: Color):
+    def perspective(self, perspective: PieceColor):
         from game.pieces import Piece
 
         if perspective == self._perspective:
@@ -162,7 +162,7 @@ class Board(Actor):
         import game.pieces
 
         pieces: list[game.pieces.Piece] = []
-        for color in [Color.WHITE, Color.BLACK]:
+        for color in [PieceColor.WHITE, PieceColor.BLACK]:
             for file in range(0, WIDTH):
                 pieces.append(game.pieces.Pawn(self, color, file))
             for side in [Side.QUEEN, Side.KING]:
@@ -193,8 +193,8 @@ class Board(Actor):
         file = files.index(uci[0])
         rank = int(uci[1])
         return self.index(
-            file if self.perspective == Color.WHITE else 8 - file - 1,
-            rank - 1 if self.perspective == Color.BLACK else 8 - rank,
+            file if self.perspective == PieceColor.WHITE else 8 - file - 1,
+            rank - 1 if self.perspective == PieceColor.BLACK else 8 - rank,
         )
 
     def clear_selection(self):
@@ -231,6 +231,13 @@ class Board(Actor):
         if self.selected is not None:
             self.selected.render(screen)
 
+    def game_over(self):
+        from scenes.mainmenu import MainMenu
+
+        assert self.game is not None
+        self.game.scene.dispose()
+        self.game.scene = MainMenu(self.game)
+
     def get_moves_from(self, tile_from: Tile):
         moves: list[chess.Move] = []
         for move in self.chess_board.legal_moves:
@@ -240,21 +247,17 @@ class Board(Actor):
                 moves.append(move)
         return moves
 
-    def make_move(
-        self,
-        _from: typing.Union[None, Tile],
-        to: typing.Union[None, Tile],
-        promoteTo: str = "",
-    ):
-        import math
+    def make_move_uci(self, uci: str):
+        from game.pieces import Pawn
 
-        if _from is None or to is None:
-            return
-        # moving
-        uci = f"{_from.__str__()}{to.__str__()}{promoteTo}"
         try:
             move: chess.Move = chess.Move.from_uci(uci)
-
+            _from, to = self.find_tiles(uci[:4])
+            assert _from is not None and to is not None
+            # if len(promoteTo) > 0:
+            #    move.promotion = promotion[promoteTo]
+            if not self.chess_board.is_legal(move):
+                return
             ### Handle captures
             if self.chess_board.is_capture(move):
                 if to.piece is not None:  # may be false if en passant
@@ -266,12 +269,27 @@ class Board(Actor):
                     assert tile.piece is not None
                     tile.piece.tile = None
 
-            if len(promoteTo) > 0:
-                move.promotion = promotion[promoteTo]
-            if not self.chess_board.is_legal(move):
-                return
             if _from.piece is not None:
                 _from.piece.tile = to
+                if move.promotion is not None:
+                    assert to.piece is not None
+                    assert self.game is not None
+                    color = to.piece.color
+                    theme = self.game.assets.textures.pieces.regular
+                    pieces = theme.white if color == PieceColor.WHITE else theme.black
+                    match move.promotion:
+                        case chess.KNIGHT:
+                            to.piece.original_texture = pieces.knight
+                        case chess.BISHOP:
+                            to.piece.original_texture = pieces.bishop
+                        case chess.ROOK:
+                            to.piece.original_texture = pieces.rook
+                        case chess.QUEEN:
+                            to.piece.original_texture = pieces.queen
+                    to.piece.on_resize()
+                    assert isinstance(to.piece, Pawn)
+                    to.piece.promoted = True
+
             print(f"{uci} | {self.chess_board.san(move)}")
             _from.selected = False
             to.selected = False
@@ -282,11 +300,11 @@ class Board(Actor):
             y = 7 if self.perspective == to.piece.color else 0
             from_x = to_x = None
             if self.chess_board.is_kingside_castling(move):
-                from_x = 7 if self.perspective == Color.WHITE else 0
-                to_x = 5 if self.perspective == Color.WHITE else 2
+                from_x = 7 if self.perspective == PieceColor.WHITE else 0
+                to_x = 5 if self.perspective == PieceColor.WHITE else 2
             if self.chess_board.is_queenside_castling(move):
-                from_x = 0 if self.perspective == Color.WHITE else 7
-                to_x = 3 if self.perspective == Color.WHITE else 4
+                from_x = 0 if self.perspective == PieceColor.WHITE else 7
+                to_x = 3 if self.perspective == PieceColor.WHITE else 4
             if from_x is not None and to_x is not None:
                 _from = self.tile(self.index(from_x, y))
                 to = self.tile(self.index(to_x, y))
@@ -305,6 +323,19 @@ class Board(Actor):
             print(e)
         self.turn_of = self.turn_of.opposite()
         return
+
+    def make_move(
+        self,
+        _from: typing.Union[None, Tile],
+        to: typing.Union[None, Tile],
+        promoteTo: str = "",
+    ):
+
+        if _from is None or to is None:
+            return
+        # moving
+        uci = f"{_from.__str__()}{to.__str__()}{promoteTo}"
+        self.make_move_uci(uci)
 
     def update(self, delta):
         for tile in self.tiles:

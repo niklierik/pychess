@@ -4,31 +4,103 @@ from game.color import PieceColor
 
 
 class GameScene(Scene):
-    def __init__(self, game) -> None:
+    def __init__(self, game, white_controller, black_controller) -> None:
         from game.controllers import Controller, PlayerController
         from actors.board import Board
-
-        super().__init__(game)
-        self.board = Board(self)
-        self.white_player: Controller = PlayerController(self.board)
-        self.black_player: Controller = PlayerController(self.board)
-
-    def init(self):
         from actors.button import Button
 
+        super().__init__(game)
         icons = self.game.assets.textures.buttons.icons
+        self.board = Board(self)
+
+        self.white_player: Controller = white_controller
+        self.black_player: Controller = black_controller
+        if not isinstance(white_controller, PlayerController) and isinstance(
+            black_controller, PlayerController
+        ):
+            self.board.perspective = PieceColor.BLACK
         self.change_perspective_btn = Button(
             self,
-            (self.board.bounds.right + 10, self.board.bounds.top),
+            (self.board.bounds.right + 80, self.board.bounds.top),
             (64, 64),
             icons.refresh,
             icons.hover.refresh,
             icons.on_pressed.refresh,
             self.on_change_perspective,
         )
+        self.to_main_menu_btn = Button(
+            self,
+            (self.board.bounds.right + 80, self.board.bounds.top + 70),
+            (64, 64),
+            icons.close,
+            icons.hover.close,
+            icons.on_pressed.close,
+            self.to_main_menu,
+        )
+        self.promote_to_queen_btn = Button(
+            self,
+            (self.board.bounds.right + 10, self.board.bounds.top),
+            (64, 64),
+            icons.queen,
+            icons.hover.queen,
+            icons.on_pressed.queen,
+            lambda x: None,
+        )
+
+        self.promote_to_rook_btn = Button(
+            self,
+            (self.board.bounds.right + 10, self.board.bounds.top + 1 * 70),
+            (64, 64),
+            icons.rook,
+            icons.hover.rook,
+            icons.on_pressed.rook,
+            lambda x: None,
+        )
+
+        self.promote_to_knight_btn = Button(
+            self,
+            (self.board.bounds.right + 10, self.board.bounds.top + 2 * 70),
+            (64, 64),
+            icons.knight,
+            icons.hover.knight,
+            icons.on_pressed.knight,
+            lambda x: None,
+        )
+
+        self.promote_to_bishop_btn = Button(
+            self,
+            (self.board.bounds.right + 10, self.board.bounds.top + 3 * 70),
+            (64, 64),
+            icons.bishop,
+            icons.hover.bishop,
+            icons.on_pressed.bishop,
+            lambda x: None,
+        )
+
+    def init(self):
+
+        self.promotion_btns = [
+            self.promote_to_queen_btn,
+            self.promote_to_rook_btn,
+            self.promote_to_knight_btn,
+            self.promote_to_bishop_btn,
+        ]
+        for btn in self.promotion_btns:
+            btn.hide()
         self.actors.append(self.board)
         self.actors.append(self.change_perspective_btn)
-        return super().init()
+        self.actors.append(self.to_main_menu_btn)
+        self.actors.extend(self.promotion_btns)
+        for c in self.controllers:
+            c.init(self)
+        super().init()
+
+    def loop(self, delta: float):
+        super().loop(delta)
+        if self.board.turn_of == PieceColor.WHITE:
+            self.white_player.update(self)
+        else:
+            self.black_player.update(self)
 
     @property
     def controllers(self):
@@ -45,3 +117,13 @@ class GameScene(Scene):
         self.board.selected = None
         for tile in self.board.tiles:
             tile.can_move_there = False
+
+    def to_main_menu(self, _):
+        from scenes.mainmenu import MainMenu
+
+        self.game.scene = MainMenu(self.game)
+
+    def dispose(self):
+        super().dispose()
+        for c in self.controllers:
+            c.dispose()

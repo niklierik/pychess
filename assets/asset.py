@@ -119,6 +119,15 @@ class Icons:
         self.restart = pygame.image.load(path.join(self.__str__(), "restart.png"))
         self.refresh = pygame.image.load(path.join(self.__str__(), "refresh.png"))
         self.settings = pygame.image.load(path.join(self.__str__(), "settings.png"))
+        self.play_white = pygame.image.load(path.join(self.__str__(), "play_white.png"))
+        self.play_black = pygame.image.load(path.join(self.__str__(), "play_black.png"))
+        self.play_random = pygame.image.load(
+            path.join(self.__str__(), "play_random.png")
+        )
+        self.queen = pygame.image.load(path.join(self.__str__(), "queen.png"))
+        self.bishop = pygame.image.load(path.join(self.__str__(), "bishop.png"))
+        self.rook = pygame.image.load(path.join(self.__str__(), "rook.png"))
+        self.knight = pygame.image.load(path.join(self.__str__(), "knight.png"))
         self.volume_down = pygame.image.load(
             path.join(self.__str__(), "volume_down.png")
         )
