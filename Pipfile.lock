@@ -258,20 +258,6 @@
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
             "version": "==1.16.0"
         },
-        "steam": {
-            "hashes": [
-                "sha256:2b5bd6911c0d4a7312f441b8d162b9d8d47c8bebb8efc6c8867393b0323fa52e"
-            ],
-            "index": "pypi",
-            "version": "==1.4.4"
-        },
-        "steamclient": {
-            "hashes": [
-                "sha256:5eb0a3816ef68743e697064570e911e2e7552048184fc2780e92e36dc8460e64"
-            ],
-            "index": "pypi",
-            "version": "==1.2"
-        },
         "urllib3": {
             "hashes": [
                 "sha256:8a388717b9476f934a21484e8c8e61875ab60644d29b9b39e11e4b9dc1c6b305",
