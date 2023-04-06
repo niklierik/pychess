@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "af1b2191ef569bc16b6a376bafa3fda82c32b3b9e8f55cab3a6ccb19acd87093"
+            "sha256": "8652cbf294c5cefb69b35e18501ada5685eb6b21c39eb845c0f29f3088872828"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -264,6 +264,13 @@
             ],
             "index": "pypi",
             "version": "==1.4.4"
+        },
+        "steamclient": {
+            "hashes": [
+                "sha256:5eb0a3816ef68743e697064570e911e2e7552048184fc2780e92e36dc8460e64"
+            ],
+            "index": "pypi",
+            "version": "==1.2"
         },
         "urllib3": {
             "hashes": [
