@@ -22,6 +22,8 @@ promotion = {
     "knight": chess.KNIGHT,
 }
 
+board_pos = (500 + TILESIZE, (1080 - TILESIZE * HEIGHT) // 2)
+
 
 class Board(Actor):
     def __init__(self, scene, perspective=PieceColor.WHITE) -> None:
@@ -30,7 +32,7 @@ class Board(Actor):
         self.tiles: list[Tile] = []
         self._perspective = perspective
         self.chars: list[TextureActor] = []
-        self.offset = (50 + TILESIZE, (1080 - TILESIZE * HEIGHT) // 2)
+        self.offset = board_pos
         self.turn_of = PieceColor.WHITE
         if self.game is not None:
             self.rank_textures = self.game.assets.textures.chars.ranks
