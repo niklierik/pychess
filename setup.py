@@ -156,7 +156,6 @@ ai/lvl2.json
 ai/lvl3.json
 ai/lvl1.json
 README.md
-.vscode/launch.json
 .gitignore""".split(
     "\n"
 )
