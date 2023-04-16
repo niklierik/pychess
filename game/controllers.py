@@ -79,7 +79,7 @@ class AIController(Controller):
             lvlai = json.load(lvl_f)
         obj = {}
         if commonai is not None:
-            for (key, value) in commonai.items():
+            for key, value in commonai.items():
                 if key == "Depth":
                     self.depth = value
                     continue
@@ -88,7 +88,7 @@ class AIController(Controller):
                     continue
                 obj[key] = value
         if lvlai is not None:
-            for (key, value) in lvlai.items():
+            for key, value in lvlai.items():
                 if key == "Depth":
                     self.depth = value
                     continue
@@ -106,7 +106,9 @@ class AIController(Controller):
         if self.settings is None:
             return
         self.scene = scene
-        self.engine = chess.engine.SimpleEngine.popen_uci("./stockfish")
+        self.engine = chess.engine.SimpleEngine.popen_uci(
+            self.scene.game.path_to_stockfish
+        )
         self.engine.configure(self.settings)
         self.update_thread.start()
 

@@ -91,6 +91,7 @@ class PlayButtons:
                 path.join(self.__str__(), "on_pressed"), False
             )
         self.ai = pygame.image.load(path.join(self.__str__(), "ai.png"))
+        self.empty = pygame.image.load(path.join(self.__str__(), "empty.png"))
         self.analyse = pygame.image.load(path.join(self.__str__(), "analyse.png"))
         self.player = pygame.image.load(path.join(self.__str__(), "player.png"))
         self.lvl1 = pygame.image.load(path.join(self.__str__(), "lvl1.png"))

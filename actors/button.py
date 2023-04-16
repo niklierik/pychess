@@ -117,3 +117,38 @@ class Button(Actor):
         self.pressed = False
         if self.action is not None and self.render_bounds.collidepoint(pos[0], pos[1]):
             self.action(event)
+
+    @staticmethod
+    def from_text(
+        scene: Scene,
+        text: str,
+        bounds: pygame.Rect,
+        action: Callable[[ClickEvent], None],
+    ):
+        text_texture = scene.game.assets.fonts.main.render(text, False, "black")
+        texture = pygame.transform.scale(
+            scene.game.assets.textures.buttons.play.empty, bounds.size
+        )
+        texture.blit(text_texture, pygame.Rect(0, 0, bounds.size[0], bounds.size[1]))
+        hover_texture = pygame.transform.scale(
+            scene.game.assets.textures.buttons.play.hover.empty, bounds.size
+        )
+        hover_texture.blit(
+            text_texture, pygame.Rect(0, 0, bounds.size[0], bounds.size[1])
+        )
+        on_pressed_texture = pygame.transform.scale(
+            scene.game.assets.textures.buttons.play.on_pressed.empty, bounds.size
+        )
+        on_pressed_texture.blit(
+            text_texture, pygame.Rect(0, 0, bounds.size[0], bounds.size[1])
+        )
+        btn = Button(
+            scene,
+            bounds.topleft,
+            bounds.size,
+            texture,
+            hover_texture,
+            on_pressed_texture,
+            action,
+        )
+        return btn

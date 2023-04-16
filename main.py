@@ -1,3 +1,4 @@
+import json
 import logging
 import os.path as path
 import platform
@@ -11,6 +12,7 @@ class Game:
     def __init__(self) -> None:
         from scenes.scene import Scene
 
+        self.load_settings()
         # Is the game running?
         self.running: bool = False
         # The current scene being rendered
@@ -19,6 +21,18 @@ class Game:
         self.screen: pygame.Surface = None  # type: ignore
         # Clock used by pygame
         self.clock: pygame.time.Clock = None  # type: ignore
+
+    def load_settings(self):
+        try:
+            with open("settings.json") as settings_f:
+                self.settings = json.load(settings_f)
+        except BaseException:
+            self.settings = {
+                "path_to_stockfish": "./stockfish",
+                "player_name": "Player",
+            }
+        with open("settings.json", "w") as settings_f:
+            json.dump(self.settings, settings_f)
 
     @property
     def scene(self):
@@ -31,6 +45,14 @@ class Game:
         self._scene = scene
         if self._scene is not None:
             self._scene.init()
+
+    @property
+    def path_to_stockfish(self) -> str:
+        return self.settings["path_to_stockfish"]
+
+    @property
+    def player_name(self) -> str:
+        return self.settings["player_name"]
 
     def init(self):
         """
@@ -54,6 +76,11 @@ class Game:
         self.viewport = Viewport(pygame.display.get_window_size())
         self.clock = pygame.time.Clock()
         self.running = True
+        if not path.exists(self.path_to_stockfish):
+            from scenes.install_stockfish import InstallStockfishScene
+
+            self.scene = InstallStockfishScene(self)
+            return
         self.scene = MainMenu(self)
 
     def events(self):
