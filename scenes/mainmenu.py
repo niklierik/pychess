@@ -5,7 +5,7 @@ import random
 
 
 class MainMenu(Scene):
-    import main
+    import main as main
     from actors.button import ClickEvent
 
     def __init__(self, game: main.Game):
