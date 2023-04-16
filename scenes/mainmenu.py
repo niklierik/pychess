@@ -51,6 +51,7 @@ class MainMenu(Scene):
             self.game.assets.textures.buttons.play.on_pressed.ai,
             self.on_show_ai_lvls,
         )
+        """
         self.play_player_btn = Button(
             self,
             (100, 10 + 70),
@@ -60,6 +61,7 @@ class MainMenu(Scene):
             self.game.assets.textures.buttons.play.on_pressed.player,
             self.on_play_player,
         )
+        """
         self.analyse_btn = Button(
             self,
             (100, 10 + 2 * 70),
@@ -71,7 +73,7 @@ class MainMenu(Scene):
         )
         self.play_buttons: list[Button] = [
             self.play_ai_btn,
-            self.play_player_btn,
+            # self.play_player_btn,
             self.analyse_btn,
         ]
         self.actors.extend(self.play_buttons)
