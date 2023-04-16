@@ -216,7 +216,7 @@ class MainMenu(Scene):
         playersColor = btn.custom_vars["color"]
         lvl = btn.custom_vars["lvl"]
         print(f"Playing AI {lvl}:")
-        player = PlayerController(playersColor, "Player")
+        player = PlayerController(playersColor, self.game.player_name)
         ai = AIController(playersColor.opposite(), lvl)
         self.game.scene = GameScene(
             self.game,

@@ -100,7 +100,6 @@ class GameScene(Scene):
         )
 
     def init(self):
-
         self.promotion_btns = [
             self.promote_to_queen_btn,
             self.promote_to_rook_btn,
