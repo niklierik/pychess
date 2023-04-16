@@ -1,6 +1,7 @@
 from scenes.scene import Scene
 import typing
 from game.color import PieceColor
+import pygame
 
 
 class GameScene(Scene):
@@ -8,6 +9,7 @@ class GameScene(Scene):
         from game.controllers import Controller, PlayerController
         from actors.board import Board
         from actors.button import Button
+        from actors.text import Text
 
         super().__init__(game)
         icons = self.game.assets.textures.buttons.icons
@@ -76,6 +78,26 @@ class GameScene(Scene):
             icons.on_pressed.bishop,
             lambda x: None,
         )
+        text_pos = self.board.bounds.bottomleft
+        self.white_player_text = Text(
+            self,
+            self.white_player.name,
+            (255, 255, 255),
+            None,
+            pygame.Rect(
+                text_pos[0], text_pos[1] + 50, len(self.white_player.name) * 20, 30
+            ),
+        )
+        text_pos = self.board.bounds.topleft
+        self.black_player_text = Text(
+            self,
+            self.black_player.name,
+            (255, 255, 255),
+            None,
+            pygame.Rect(
+                text_pos[0], text_pos[1] - 50, len(self.black_player.name) * 20, 30
+            ),
+        )
 
     def init(self):
 
@@ -91,6 +113,8 @@ class GameScene(Scene):
         self.actors.append(self.change_perspective_btn)
         self.actors.append(self.to_main_menu_btn)
         self.actors.extend(self.promotion_btns)
+        self.actors.append(self.white_player_text)
+        self.actors.append(self.black_player_text)
         for c in self.controllers:
             c.init(self)
         super().init()

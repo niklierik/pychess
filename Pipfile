@@ -5,7 +5,6 @@ name = "pypi"
 
 [packages]
 pygame = "*"
-steam = "*"
 chess = "*"
 
 [dev-packages]

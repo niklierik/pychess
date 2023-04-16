@@ -23,18 +23,9 @@ class MainMenu(Scene):
             self.game.assets.textures.buttons.icons.on_pressed.play,
             self.on_play_btn,
         )
-        self.settings_btn = Button(
-            self,
-            (10, 10 + 70),
-            (64, 64),
-            self.game.assets.textures.buttons.icons.settings,
-            self.game.assets.textures.buttons.icons.hover.settings,
-            self.game.assets.textures.buttons.icons.on_pressed.settings,
-            self.on_settings_btn,
-        )
         self.exit_btn = Button(
             self,
-            (10, 10 + 2 * 70),
+            (10, 10 + 70),
             (64, 64),
             self.game.assets.textures.buttons.icons.close,
             self.game.assets.textures.buttons.icons.hover.close,
@@ -44,11 +35,12 @@ class MainMenu(Scene):
         empty: list[Button] = []
         self.play_ai_btns_lvl = [empty] * 5
         self.actors.append(self.play_btn)
-        self.actors.append(self.settings_btn)
         self.actors.append(self.exit_btn)
 
     def init_play_btns(self):
         from actors.button import Button
+        from actors.text import Text
+        import pygame
 
         self.play_ai_btn = Button(
             self,
@@ -83,6 +75,15 @@ class MainMenu(Scene):
             self.analyse_btn,
         ]
         self.actors.extend(self.play_buttons)
+        self.actors.append(
+            Text(
+                self,
+                "Made by: Erik Nikli",
+                (255, 255, 255),
+                None,
+                pygame.Rect(10, 1020, 300, 20),
+            )
+        )
         for btn in self.play_buttons:
             btn.hide()
 
@@ -231,6 +232,7 @@ class MainMenu(Scene):
     def hide_ai_btns(self):
         for btn in self.play_ai_btns:
             btn.hide()
+        self.hide_color_picking()
 
     def hide_player_btns(self):
         pass
