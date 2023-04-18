@@ -155,10 +155,8 @@ class Tile(Actor):
     def on_mouse_button_up(
         self, event: pygame.event.Event, pos: tuple[int, int], button: int
     ):
-        from game.color import PieceColor
         from game.controllers import PlayerController
         from game.pieces import Pawn
-        from scenes.gamescene import GameScene
 
         #
 
@@ -199,7 +197,6 @@ class Tile(Actor):
                 )
                 or self.piece.color != self.board.turn_of
             ):
-
                 self.board.clear_selection()
                 return
             # print(self.__str__() + " selected")

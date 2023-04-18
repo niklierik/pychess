@@ -1,5 +1,4 @@
 import actors.actor
-import typing
 
 
 class TextureActor(actors.actor.Actor):
