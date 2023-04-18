@@ -1,7 +1,7 @@
 from scenes.scene import Scene
-import typing
 from game.color import PieceColor
 import pygame
+from typing import Union
 
 
 class GameScene(Scene):
@@ -15,8 +15,11 @@ class GameScene(Scene):
         icons = self.game.assets.textures.buttons.icons
         self.board = Board(self)
 
+        self.white_player_text: Union[None, Text] = None
+        self.black_player_text: Union[None, Text] = None
         self.white_player: Controller = white_controller
         self.black_player: Controller = black_controller
+        self.generate_texts()
         if not isinstance(white_controller, PlayerController) and isinstance(
             black_controller, PlayerController
         ):
@@ -78,6 +81,10 @@ class GameScene(Scene):
             icons.on_pressed.bishop,
             lambda x: None,
         )
+
+    def generate_texts(self):
+        from actors.text import Text
+
         text_pos = self.board.bounds.bottomleft
         self.white_player_text = Text(
             self,
@@ -112,11 +119,28 @@ class GameScene(Scene):
         self.actors.append(self.change_perspective_btn)
         self.actors.append(self.to_main_menu_btn)
         self.actors.extend(self.promotion_btns)
+        assert self.white_player_text is not None and self.black_player_text is not None
         self.actors.append(self.white_player_text)
         self.actors.append(self.black_player_text)
         for c in self.controllers:
             c.init(self)
         super().init()
+
+    def reverse(self):
+        assert self.white_player_text is not None and self.black_player_text is not None
+        a = self.white_player_text.text
+        b = self.black_player_text.text
+        text_pos = self.board.bounds.bottomleft
+        self.white_player_text.set_text(
+            b,
+            pygame.Rect(text_pos[0], text_pos[1] + 50, len(b) * 20, 30),
+        )
+        text_pos = self.board.bounds.topleft
+        self.black_player_text.set_text(
+            a,
+            pygame.Rect(text_pos[0], text_pos[1] - 50, len(a) * 20, 30),
+        )
+        # self.generate_texts()
 
     def loop(self, delta: float):
         super().loop(delta)

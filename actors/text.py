@@ -52,6 +52,10 @@ class Text(Actor):
             return pygame.Rect(0, 0, 0, 0)
         return self.game.viewport.get_rect(self.bounds)
 
+    def set_text(self, txt: str, new_bounds: pygame.Rect):
+        self.bounds = new_bounds
+        self.text = txt
+
     def on_window_resize(self, _: typing.Union[None, pygame.event.Event]):
         self._texture = pygame.transform.scale(
             self._orig_texture, self.render_bounds.size

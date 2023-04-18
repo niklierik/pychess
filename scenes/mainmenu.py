@@ -64,7 +64,7 @@ class MainMenu(Scene):
         """
         self.analyse_btn = Button(
             self,
-            (100, 10 + 2 * 70),
+            (100, 10 + 1 * 70),
             (57 * 64 // 21, 64),
             self.game.assets.textures.buttons.play.analyse,
             self.game.assets.textures.buttons.play.hover.analyse,

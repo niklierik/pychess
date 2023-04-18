@@ -58,6 +58,7 @@ class Board(Actor):
 
         self.rank_textures.reverse()
         self.file_textures.reverse()
+        self.scene.reverse()  # type: ignore
         if self.game is not None:
             self.generate_chars()
         self._perspective = perspective
@@ -332,7 +333,6 @@ class Board(Actor):
         to: typing.Union[None, Tile],
         promoteTo: str = "",
     ):
-
         if _from is None or to is None:
             return
         # moving
