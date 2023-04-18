@@ -126,6 +126,8 @@ class Tile(Actor):
         return f"{files[self.x]}{rank}"
 
     def on_window_resize(self, event: typing.Union[None, pygame.event.Event]):
+        if self.scene is None:
+            return
         self.texture = pygame.transform.scale(
             self.orig_texture, self.render_bounds.size
         )
