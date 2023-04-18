@@ -149,5 +149,5 @@ include ai/lvl5.json
 include ai/lvl2.json
 include ai/lvl3.json
 include ai/lvl1.json
-include ./README.md
-include ./.gitignore
+include README.md
+include .gitignore
