@@ -58,9 +58,9 @@ class Board(Actor):
 
         self.rank_textures.reverse()
         self.file_textures.reverse()
-        self.scene.reverse()  # type: ignore
         if self.game is not None:
             self.generate_chars()
+            self.scene.reverse()  # type: ignore
         self._perspective = perspective
         pieces: list[typing.Union[None, Piece]] = list([None] * (WIDTH * HEIGHT))
         pieces = list(map(lambda tile: tile.piece, self.tiles))
@@ -235,11 +235,15 @@ class Board(Actor):
             self.selected.render(screen)
 
     def game_over(self):
-        from scenes.mainmenu import MainMenu
+        from scenes.end_game import EndGameScene
+
+        outcome = self.chess_board.outcome()
+        if outcome is None:
+            return
 
         assert self.game is not None
         self.game.scene.dispose()
-        self.game.scene = MainMenu(self.game)
+        self.game.scene = EndGameScene(self.game, self, outcome)
 
     def get_moves_from(self, tile_from: Tile):
         moves: list[chess.Move] = []
