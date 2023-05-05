@@ -120,6 +120,7 @@ class AIController(Controller):
         self.run = True
 
     def update_async(self):
+        import chess
         import chess.engine
 
         global ct
@@ -138,8 +139,6 @@ class AIController(Controller):
                     # print(f"Result: {result}")
                     if result.move is not None:
                         self.scene.board.make_move_uci(result.move.uci())
-                    else:
-                        self.scene.board.game_over()
                 except BaseException as e:
                     print(e)
                     pass

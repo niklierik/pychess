@@ -235,15 +235,14 @@ class Board(Actor):
             self.selected.render(screen)
 
     def game_over(self):
-        from scenes.end_game import EndGameScene
+        from scenes.gamescene import GameScene
 
         outcome = self.chess_board.outcome()
         if outcome is None:
             return
 
         assert self.game is not None
-        self.game.scene.dispose()
-        self.game.scene = EndGameScene(self.game, self, outcome)
+        self.scene.game_over()  # type: ignore
 
     def get_moves_from(self, tile_from: Tile):
         moves: list[chess.Move] = []

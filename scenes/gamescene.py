@@ -81,6 +81,36 @@ class GameScene(Scene):
             icons.on_pressed.bishop,
             lambda x: None,
         )
+        self.game_over_title = Text(
+            self,
+            "Vége",
+            "white",
+            "black",
+            pygame.Rect(self.board.bounds.right + 160, self.board.bounds.top, 300, 50),
+        )
+        self.game_over_subtitle = Text(
+            self,
+            "Döntetlen",
+            "white",
+            "black",
+            pygame.Rect(
+                self.board.bounds.right + 160, self.board.bounds.top + 70, 300, 20
+            ),
+        )
+
+    def game_over(self):
+        import chess
+
+        board = self.board.chess_board
+        outcome = board.outcome()
+        assert outcome is not None
+        self.actors.append(self.game_over_title)
+        self.game_over_subtitle.text = (
+            "Döntetlen"
+            if outcome.winner is None
+            else ("Fehér nyert" if outcome.winner == chess.WHITE else "Fekete nyert")
+        )
+        self.actors.append(self.game_over_subtitle)
 
     def generate_texts(self):
         from actors.text import Text
@@ -148,6 +178,8 @@ class GameScene(Scene):
             self.white_player.update(self)
         else:
             self.black_player.update(self)
+        if self.board.chess_board.is_game_over():
+            self.board.game_over()
 
     @property
     def controllers(self):
